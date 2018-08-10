@@ -4,10 +4,14 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="fonts" projectFiles="true">
+        <itemPath>fonts/Callibri15.h</itemPath>
+      </logicalFolder>
       <itemPath>system.h</itemPath>
       <itemPath>uart.h</itemPath>
       <itemPath>wm8510.h</itemPath>
       <itemPath>sram.h</itemPath>
+      <itemPath>oled.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -24,6 +28,7 @@
       <itemPath>uart.c</itemPath>
       <itemPath>wm8510.c</itemPath>
       <itemPath>sram.c</itemPath>
+      <itemPath>oled.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -33,6 +38,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>parser</Elem>
+    <Elem>fonts</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

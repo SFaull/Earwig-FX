@@ -17,7 +17,7 @@
  */
 
 
-void initUART1(void)
+void uart1_init(void)
 {
     // PERIPHERAL PIN SELECT
     __builtin_write_OSCCONL(OSCCON & ~(1<<6));  // Unlock the registers
@@ -46,7 +46,7 @@ void initUART1(void)
     __delay_ms(120);
 }
 
-void initUART2(void)
+void uart2_init(void)
 {
     // PERIPHERAL PIN SELECT
     __builtin_write_OSCCONL(OSCCON & ~(1<<6));  // Unlock the registers

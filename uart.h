@@ -20,8 +20,8 @@
 #define UART_BUFFER_SIZE		64
 
 
-void initUART1(void);
-void initUART2(void);
+void uart1_init(void);
+void uart2_init(void);
 
 #endif	/* UART_H */
 

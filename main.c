@@ -16,16 +16,16 @@
 
 int16_t main(void)
 {
-
     /* Configure the oscillator for the device */
     ConfigureOscillator();
-    initUART1();
-    initUART2();
-    
+    uart1_init();
+    uart2_init();
     wm8510_init(); //initialise WM8510 port       
     wm8510_config(); //configure WM8510    
-    sram_spi_init(); // initialise i2c peripheral
+    sram_spi_init(); // initialise spi peripheral
     sram_init(seq); //initialise 23LC1024 in sequential mode
+    oled_i2c_init(); //initialise i2c peripheral
+    oled_init(); //initialise SSD1306 OLED display
     
     while(1)
     {
