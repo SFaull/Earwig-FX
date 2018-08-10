@@ -4,18 +4,10 @@
  * Description: Interrupt routines 
  */
 
-#if defined(__XC16__)
-    #include <xc.h>
-#elif defined(__C30__)
-    #if defined(__dsPIC33E__)
-    	#include <p33Exxxx.h>
-    #elif defined(__dsPIC33F__)
-    	#include <p33Fxxxx.h>
-    #endif
-#endif
-
+#include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
+
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */
 /******************************************************************************/
@@ -124,3 +116,61 @@
 /******************************************************************************/
 
 /* TODO Add interrupt routine code here. */
+
+void __attribute__((interrupt, no_auto_psv)) _U1TXInterrupt(void)
+{
+    IFS0bits.U1TXIF = 0; // clear TX interrupt flag
+}
+
+
+void __attribute__((interrupt, no_auto_psv)) _U1RXInterrupt(void) 
+{ 
+    if (IFS0bits.U1RXIF)   // If RX interrupt flag...
+    {
+        int c            =  U1RXREG;    // store UART buffer contents
+        IFS0bits.U1RXIF  =  0;          // reset interrupt flag
+    }
+} 
+
+void __attribute__((interrupt, no_auto_psv)) _U2TXInterrupt(void)
+{
+    IFS1bits.U2TXIF = 0; // clear TX interrupt flag
+}
+
+
+void __attribute__((interrupt, no_auto_psv)) _U2RXInterrupt(void) 
+{ 
+    
+    if (IFS1bits.U2RXIF)   // If RX interrupt flag...
+    {
+        int c = U2RXREG;
+        IFS1bits.U2RXIF  =  0;          // reset interrupt flag
+    }
+} 
+
+//DCI ISR
+void __attribute__((interrupt, no_auto_psv)) _DCIInterrupt(void) 
+{
+    // in theory this should achieve simple loopback
+    static int dummy = 0;
+    static long adc = 0;
+    static int sample = 0;
+
+    IFS3bits.DCIIF = 0; //clear DCI interrupt
+
+    TXBUF0 = sample;
+    TXBUF1 = 0;
+    TXBUF2 = 0;
+    TXBUF3 = 0;
+
+    adc = RXBUF0;
+    adc = (adc << 16) | (RXBUF1);
+    dummy = RXBUF2;
+    dummy = RXBUF3;
+
+    adc = (adc + 32768) >> 16;
+    if (adc > 32767)
+        adc = 32767;
+
+    sample = adc;
+}

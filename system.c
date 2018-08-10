@@ -4,17 +4,7 @@
  * Description: System level functions
  */
 
-#if defined(__XC16__)
-    #include <xc.h>
-#elif defined(__C30__)
-    #if defined(__dsPIC33E__)
-    	#include <p33Exxxx.h>
-    #elif defined(__dsPIC33F__)
-    	#include <p33Fxxxx.h>
-    #endif
-#endif
-
-
+#include <xc.h>
 #include <stdint.h> 
 #include <stdbool.h>       
 #include "system.h"         
@@ -52,6 +42,33 @@ void ConfigureOscillator(void)
         /* Wait for Clock switch to occur */
         /* Wait for PLL to lock, only if PLL is needed */
         /* while(OSCCONbits.LOCK != 1); */
+        
+ #endif
+
+#if 0
+        
+        PLLFBD=41;              // PLL prescaler:  M = 43
+        CLKDIVbits.PLLPOST = 0; // PLL postscaler: N2 = 2
+        CLKDIVbits.PLLPRE = 0;  // PLL divisor:    N1 = 2
+        OSCTUN=0;				// Tune FRC oscillator
+
+        RCONbits.SWDTEN=0;      // Disable Watch Dog Timer
+
+        // Clock switch to incorporate PLL
+        __builtin_write_OSCCONH(0x01);				// Initiate Clock Switch to
+                                                    // FRC with PLL (NOSC=0b001)
+        __builtin_write_OSCCONL(0x01);				// Start clock switching
+        while (OSCCONbits.COSC != 0b001);			// Wait for Clock switch to occur
+        while(OSCCONbits.LOCK!=1) {};               // Wait for PLL to lock
 #endif
+        
+        //setup internal clock for 80MHz/40MIPS using internal fast osc and PLL
+        //7.37Mhz / 3 * 65 / 2 = 79.841666Mhz
+        CLKDIVbits.PLLPRE = 1; //N1 = 3
+        PLLFBD = 63; //M = 65
+        CLKDIVbits.PLLPOST = 0; //N2 = 2
+        while (!OSCCONbits.LOCK); //wait until PLL is locked
+        
+        AD1PCFGL = 0xFFFF; //set all pins digital
 }
 
