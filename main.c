@@ -13,6 +13,8 @@
 #include "uart.h"
 #include "wm8510.h"
 #include "sram.h"
+#include "oled.h"
+#include "i2c.h"
 
 int16_t main(void)
 {
@@ -24,7 +26,7 @@ int16_t main(void)
     wm8510_config(); //configure WM8510    
     sram_spi_init(); // initialise spi peripheral
     sram_init(seq); //initialise 23LC1024 in sequential mode
-    oled_i2c_init(); //initialise i2c peripheral
+    i2c_init(); //initialise i2c peripheral
     oled_init(); //initialise SSD1306 OLED display
     
     while(1)
