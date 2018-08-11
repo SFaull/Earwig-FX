@@ -10,7 +10,6 @@
 #include <string.h> /* memset */
 #include <stdbool.h>
 #include <stdlib.h>
-#include <i2c.h>
 #include "fonts/Callibri15.h"
 #include "i2c.h"
 
