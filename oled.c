@@ -117,7 +117,7 @@ int SlaveAddress = 0x3c;
 uint8_t buffer[DISPLAY_BUFFER_SIZE];
  void oled_command(char c) {
      
-    ResetVariables_I2C();
+    ResetVariables_I2C1();
     StartI2C1();
     WaitFlag();
     
@@ -143,7 +143,7 @@ uint8_t buffer[DISPLAY_BUFFER_SIZE];
     IdleI2C1();	//Wait to complete 
 }
  void oled_data(char c) {
-    ResetVariables_I2C();
+    ResetVariables_I2C1();
     StartI2C1();
     WaitFlag();
     

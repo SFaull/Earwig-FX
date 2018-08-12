@@ -10,7 +10,7 @@
 #include "i2c.h"
 
 
-void InitI2C(void)
+void InitI2C1(void)
 {
     I2C1CONbits.I2CEN = 1;      // I2C Enable bit
     I2C1CONbits.I2CSIDL = 0;    // Continue I2C module in Idle mode
@@ -60,6 +60,24 @@ void WaitForACK(void)
     while(I2C1STATbits.ACKSTAT);        // wait for ack receive from slave
 }
 
+void AckI2C1(void)
+{
+	I2C1CONbits.ACKDT = 0;
+	I2C1CONbits.ACKEN = 1;
+}
+
+// send a NACK
+void NotAckI2C1(void)
+{
+    I2C1CONbits.ACKDT = 1;
+    I2C1CONbits.ACKEN = 1;
+}
+
+char DataRdyI2C1(void)
+{
+     return I2C1STATbits.RBF;
+}
+
 char MasterWriteI2C1(unsigned char data_out)
 {
     I2C1TRN = data_out;
@@ -75,8 +93,67 @@ char MasterWriteI2C1(unsigned char data_out)
 	    else return ( 0 );               // if WCOL bit is not set return non-negative #
     }
 }
+
+unsigned char MasterReadI2C1(void)
+{
+    I2C1CONbits.RCEN = 1;
+    while(I2C1CONbits.RCEN);
+    I2C1STATbits.I2COV = 0;
+    return(I2C1RCV);
+}
+
+unsigned int MastergetsI2C1(unsigned int length, unsigned char * rdptr)
+{
+    unsigned int i2c1_data_wait = 1000;  // this was an argument, but lets hardcode it in here
+    int wait = 0;
+    while(length)                    /* Receive length bytes */
+    {
+        I2C1CONbits.RCEN = 1;
+        while(!DataRdyI2C1())
+        {
+            if(wait < i2c1_data_wait)
+                wait++ ;                 
+            else
+            return(length);          /* Time out, 
+                                        return number of byte/word to be read */
+        }
+        wait = 0;
+        *rdptr = I2C1RCV;            /* save byte received */
+        rdptr++;
+        length--;
+        if(length == 0)              /* If last char, generate NACK sequence */
+        {
+            I2C1CONbits.ACKDT = 1;
+            I2C1CONbits.ACKEN = 1;
+        }
+        else                         /* For other chars,generate ACK sequence */
+        {
+            I2C1CONbits.ACKDT = 0;
+            I2C1CONbits.ACKEN = 1;
+        }
+            while(I2C1CONbits.ACKEN == 1);    /* Wait till ACK/NACK sequence 
+                                                 is over */
+    }
+    /* return status that number of bytes specified by length was received */
+    return 0;
+}
+
+unsigned int MasterputsI2C1(unsigned char * wrptr)
+{
+    while(*wrptr)                           //transmit data until null char
+    {
+        if(MasterWriteI2C1(*wrptr) == -1)	    // write a byte
+        return -3;                          //return with write collison error
+
+        while(I2C1STATbits.TBF);             //Wait till data is transmitted.
+
+        IdleI2C1();
+        wrptr++;
+    }
+    return 0;			
+}
  
-void ResetVariables_I2C(void)
+void ResetVariables_I2C1(void)
 {
     I2C1CONbits.ACKEN=0;
     I2C1CONbits.PEN=0;
