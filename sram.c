@@ -172,5 +172,4 @@ unsigned int sram_read(unsigned long sramaddress)
     chip_select = 1;                    // Disable SRAM
 
     return (temp);                  // Return the received data
-
 }

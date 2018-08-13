@@ -15,6 +15,7 @@
 #include "sram.h"
 #include "oled.h"
 #include "i2c.h"
+#include "selftest.h"
 
 int16_t main(void)
 {
@@ -29,6 +30,8 @@ int16_t main(void)
     InitI2C1(); //initialise i2c peripheral
     oled_init(); //initialise SSD1306 OLED display
     
+    selftest();
+            
     while(1)
     {
 

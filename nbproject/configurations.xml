@@ -14,6 +14,7 @@
       <itemPath>oled.h</itemPath>
       <itemPath>i2c.h</itemPath>
       <itemPath>eeprom.h</itemPath>
+      <itemPath>selftest.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -33,6 +34,7 @@
       <itemPath>oled.c</itemPath>
       <itemPath>i2c.c</itemPath>
       <itemPath>eeprom.c</itemPath>
+      <itemPath>selftest.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
