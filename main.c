@@ -16,6 +16,7 @@
 #include "oled.h"
 #include "i2c.h"
 #include "selftest.h"
+#include "navpanel.h"
 
 int16_t main(void)
 {
@@ -23,17 +24,35 @@ int16_t main(void)
     ConfigureOscillator();
     uart1_init();
     uart2_init();
+
     //wm8510_init(); //initialise WM8510 port       
     //wm8510_config(); //configure WM8510    
     //sram_spi_init(); // initialise spi peripheral
     //sram_init(seq); //initialise 23LC1024 in sequential mode
     //InitI2C1(); //initialise i2c peripheral
     //oled_init(); //initialise SSD1306 OLED display
+    //navpanel_init();
     
     //selftest();
     
     printf("Ready \n");
     while(1)
     {
+        // check for button presses and encoder rotations
+		/*
+        switch(navpanel_pending_action())
+        {
+            case kRotateCW:
+                break;
+            case kRotateCCW:
+                break;
+            case kOK:
+                break;
+            case kBack:
+                break;
+            default:
+                break;
+        }
+		*/
     }
 }
