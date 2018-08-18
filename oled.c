@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "fonts/Callibri15.h"
 #include "i2c.h"
+#include "images.h"
 
 #define _swap_int16_t(a, b) { int16_t t = a; a = b; b = t; }
 
@@ -193,8 +194,12 @@ uint8_t buffer[DISPLAY_BUFFER_SIZE];
   oled_command(DISPLAYALLON_RESUME);
   oled_command(NORMALDISPLAY);
   oled_command(0x2e);            // stop scroll
-  oled_clear();
+  oled_clear(); // ensure display is clear
+
+  // show splash screen
+  oled_draw_xbm(0, 0, SPLASH_WIDTH, SPLASH_HEIGHT, splash);
   oled_update();    // ensure display has been cleared prior to turning it on
+  
   oled_command(DISPLAYON);
 }
 
