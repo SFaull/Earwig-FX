@@ -6,7 +6,7 @@
 
 #include <xc.h>
 #include "uart.h"
-
+#include <libpic30.h>
 /* Notes for PCB V1
  * I messed up, both UARTs are connected to pins that dont support peripheral 
  * remapping - so the following mods must be made.
@@ -18,23 +18,6 @@
 
 static void uart1_PutChar(char c);
 static void uart2_PutChar(char c);
-
-/* Redirect printf to UART2 */
-int write(int handle, void *buffer, unsigned int len)
-{
-  int i;
-   switch (handle)
-  {
-      case 0:        // handle 0 corresponds to stdout
-      case 1:        // handle 1 corresponds to stdin
-      case 2:        // handle 2 corresponds to stderr
-      default:
-          for (i=0; i<len; i++)
-              uart2_PutChar(*(char*)buffer++);
-  }
-  return(len);
-}
-
 
 void uart1_init(void)
 {
@@ -92,6 +75,8 @@ void uart2_init(void)
     
     // wait at least 104 usec (1/9600) before sending first char 
     __delay_ms(120);
+    
+    __C30_UART=2;        // redirect printf() to UART2)
 }
 
 static void uart1_PutChar(char c)
