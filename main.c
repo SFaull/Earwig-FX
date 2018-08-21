@@ -24,7 +24,7 @@ int16_t main(void)
     ConfigureOscillator();
     uart1_init();
     uart2_init();
-
+    LED_init();
     //wm8510_init(); //initialise WM8510 port       
     //wm8510_config(); //configure WM8510    
     //sram_spi_init(); // initialise spi peripheral
@@ -38,6 +38,10 @@ int16_t main(void)
     
     while(1)
     {
+        LED = 1;
+        __delay_ms(500);
+        LED = 0;
+        __delay_ms(500);
         // check for button presses and encoder rotations
 		/*
         switch(navpanel_pending_action())

@@ -13,6 +13,8 @@
 #define SYS_FREQ        79227500L      // Clock-frequecy in Hz -> Fin*(M/(N1*N2)) = 7.37*(43/(2*2)) = 79227500 
 #define FCY             SYS_FREQ/2
 
+#define LED      LATAbits.LATA10     // LED
+
 //Selectable input sources
 #define INT1_in RPINR0bits.INT1R
 #define INT2_in RPINR1bits.INT2R
