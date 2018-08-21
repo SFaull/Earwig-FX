@@ -17,6 +17,7 @@
       <itemPath>selftest.h</itemPath>
       <itemPath>navpanel.h</itemPath>
       <itemPath>images.h</itemPath>
+      <itemPath>navpanel_process.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -39,6 +40,7 @@
       <itemPath>selftest.c</itemPath>
       <itemPath>navpanel.c</itemPath>
       <itemPath>images.c</itemPath>
+      <itemPath>navpanel_process.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
