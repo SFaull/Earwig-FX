@@ -41,12 +41,9 @@ void ConfigureOscillator(void)
 
         /* Wait for Clock switch to occur */
         /* Wait for PLL to lock, only if PLL is needed */
-        /* while(OSCCONbits.LOCK != 1); */
-        
- #endif
-
-#if 0
-        
+        /* while(OSCCONbits.LOCK != 1); */        
+#endif
+#if 0        
         PLLFBD=41;              // PLL prescaler:  M = 43
         CLKDIVbits.PLLPOST = 0; // PLL postscaler: N2 = 2
         CLKDIVbits.PLLPRE = 0;  // PLL divisor:    N1 = 2
@@ -61,7 +58,7 @@ void ConfigureOscillator(void)
         while (OSCCONbits.COSC != 0b001);			// Wait for Clock switch to occur
         while(OSCCONbits.LOCK!=1) {};               // Wait for PLL to lock
 #endif
-        
+#if 1
         //setup internal clock for 80MHz/40MIPS using internal fast osc and PLL
         //7.37Mhz / 3 * 65 / 2 = 79.841666Mhz
         CLKDIVbits.PLLPRE = 1; //N1 = 3
@@ -70,6 +67,7 @@ void ConfigureOscillator(void)
         while (!OSCCONbits.LOCK); //wait until PLL is locked
         
         AD1PCFGL = 0xFFFF; //set all pins digital
+#endif
 }
 
 void LED_init(void)

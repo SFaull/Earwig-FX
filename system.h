@@ -127,5 +127,6 @@ functions, and other non-peripheral microcontroller initialization functions
 go here. */
 
 void ConfigureOscillator(void); /* Handles clock switching/osc initialization */
+void LED_init(void);
 
 #endif	/* SYSTEM_H */
