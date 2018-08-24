@@ -18,7 +18,10 @@
  * CS1 = pin35 (RA9)
  */
 
-void sram_spi_init(void)
+static unsigned char spi_command(unsigned char data);
+static void initSPI2(void);
+
+static void initSPI2(void)
 { 
     // PERIPHERAL PIN SELECT
     __builtin_write_OSCCONL(OSCCON & ~(1<<6));  // Unlock the registers    
@@ -45,30 +48,27 @@ void sram_spi_init(void)
     SPI2STATbits.SPIEN = 1;     //enable SPI      
 }
 
-void sram_fill(unsigned int sramdata) 
+static unsigned char spi_command(unsigned char data)
+{
+    SPI2BUF = data;                 // Put data into buffer
+    while (!SPI2STATbits.SPIRBF);   // Wait for receive buffer to indicate that its full
+    return SPI2BUF;     // return whatever has been put in the receive buffer
+}
+
+void sram_fill(unsigned char sramdata) 
 {
     unsigned char temp;
     unsigned long a;
     
     SRAM0_SS = 0;                    // Enable SRAM
 
-    SPI2BUF = WRITE;                // Send WRITE command, to be followed by 24-bit address
-    while (!SPI2STATbits.SPIRBF);   // Wait for receive buffer to indicate that its full
-    temp = SPI2BUF;                 // Store whatever has been put in the receive buffer
+    temp = spi_command(WRITE);      // Send WRITE command, to be followed by 24-bit address
 
     for (a=0; a<3; a++)             // send 24 bit address in 3 bytes
-    {
-        SPI2BUF = 0;                    
-        while (!SPI2STATbits.SPIRBF);
-        temp = SPI2BUF;
-    }
+        temp = spi_command(0);
     
-    for (a=0; a<131071; a++)            // write byte to entire of memory
-    {
-        SPI2BUF = sramdata;             // Send byte
-        while (!SPI2STATbits.SPIRBF);
-        temp = SPI2BUF;
-    }
+    for (a=0; a<SRAM_SIZE; a++)            // write byte to entire of memory
+        temp = spi_command(sramdata);
 
     SRAM0_SS = 1;                          // Disable SRAM
 }
@@ -77,15 +77,12 @@ void sram_init(unsigned char sram_mode)
 {
     unsigned char temp;
     
+    initSPI2();
+    
     SRAM0_SS = 0;  // default to SRAM chip #1
     
-    SPI2BUF = WRMR;                 // Put into WRITE mode
-    while (!SPI2STATbits.SPIRBF);   // Wait for receive buffer to indicate that its full
-    temp = SPI2BUF;                 // Store whatever has been put in the receive buffer
-
-    SPI2BUF = sram_mode;            // Set mode of operation
-    while (!SPI2STATbits.SPIRBF);   // Wait for receive buffer to indicate that its full
-    temp = SPI2BUF;                 // Store whatever has been put in the receive buffer
+    temp = spi_command(WRMR);   // Put into WRITE mode
+    temp = spi_command(sram_mode); // Set mode of operation
 
     SRAM0_SS = 1; 
     
@@ -98,29 +95,14 @@ void sram_write(unsigned long sramaddress, unsigned int sramdata)
     
     SRAM0_SS = 0;                     // Enable SRAM
 
-    SPI2BUF = WRITE;                // Send WRITE command, to be followed by 24-bit address
-    while (!SPI2STATbits.SPIRBF);   // Wait for receive buffer to indicate that its full
-    temp = SPI2BUF;                 // Store whatever has been put in the receive buffer
+    temp = spi_command(WRITE);      // Send WRITE command, to be followed by 24-bit address
 
-    SPI2BUF = sramaddress >> 16;    // Send first 8 bits of address (16->23)
-    while (!SPI2STATbits.SPIRBF);
-    temp = SPI2BUF;
-
-    SPI2BUF = sramaddress >> 8;     // Send second 8 bits of address (8->15)
-    while (!SPI2STATbits.SPIRBF);
-    temp = SPI2BUF;
-
-    SPI2BUF = sramaddress;          // Send third 8 bits of address (0->7)
-    while (!SPI2STATbits.SPIRBF);
-    temp = SPI2BUF;
+    temp = spi_command(sramaddress >> 16);  // Send first 8 bits of address (16->23)
+    temp = spi_command(sramaddress >> 8);   // Send second 8 bits of address (8->15)
+    temp = spi_command(sramaddress);        // Send third 8 bits of address (0->7)
     
-    SPI2BUF = sramdata >> 8;        // send upper byte
-    while (!SPI2STATbits.SPIRBF);
-    temp = SPI2BUF;
-
-    SPI2BUF = sramdata;             // Send lower byte
-    while (!SPI2STATbits.SPIRBF);
-    temp = SPI2BUF;
+    temp = spi_command(sramdata >> 8);      // send upper byte
+    temp = spi_command(sramdata);      // send lower byte
 
     SRAM0_SS = 1;                     // Disable SRAM
 
@@ -130,33 +112,19 @@ unsigned int sram_read(unsigned long sramaddress)
 {
     unsigned int temp;
 
-    SRAM0_SS = 0;                     // Enable SRAM
+    SRAM0_SS = 0;                           // Enable SRAM
 
-    SPI2BUF = READ;                 // Send WRITE command, to be followed by 24-bit address
-    while (!SPI2STATbits.SPIRBF);
-    temp = SPI2BUF;
-
-    SPI2BUF = sramaddress >> 16;    // Send first 8 bits of address (16->23)
-    while (!SPI2STATbits.SPIRBF);
-    temp = SPI2BUF;
-
-    SPI2BUF = sramaddress >> 8;     // Send second 8 bits of address (8->15)
-    while (!SPI2STATbits.SPIRBF);
-    temp = SPI2BUF;
-
-    SPI2BUF = sramaddress;          // Send third 8 bits of address (0->7)
-    while (!SPI2STATbits.SPIRBF);
-    temp = SPI2BUF;
-
-    SPI2BUF = 255;
-    while (!SPI2STATbits.SPIRBF);
-    temp = SPI2BUF << 8;            // receive upper byte
-
-    SPI2BUF = 255;
-    while (!SPI2STATbits.SPIRBF);
-    temp = temp | SPI2BUF;          // recieve lower byte and add it to the upper.
+    temp = spi_command(READ);               // Send WRITE command, to be followed by 24-bit address    
+            
+    temp = spi_command(sramaddress >> 16);  // Send first 8 bits of address (16->23)
+    temp = spi_command(sramaddress >> 8);   // Send second 8 bits of address (8->15)
+    temp = spi_command(sramaddress);        // Send third 8 bits of address (0->7)
+    
+    temp = spi_command(255) << 8;           // receive upper byte
+    temp |= spi_command(255);               // recieve lower byte and add it to the upper.
 
     SRAM0_SS = 1;                     // Disable SRAM
 
     return temp;                  // Return the received data
 }
+

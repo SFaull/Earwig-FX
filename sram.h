@@ -25,10 +25,11 @@
 #define seq  64
 #define page 128
 
-void sram_spi_init(void);
+#define SRAM_SIZE (128L * 1024L)  // 128kb
+
 void sram_select(unsigned int cs);
 void sram_init(unsigned char sram_mode);
-void sram_fill(unsigned int sramdata);
+void sram_fill(unsigned char sramdata);
 void sram_write(unsigned long sramaddress, unsigned int sramdata);
 unsigned int sram_read(unsigned long sramaddress);
 
