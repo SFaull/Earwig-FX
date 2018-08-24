@@ -17,7 +17,6 @@
 static bool selftest_eeprom();
 static bool selftest_sram();
 static void selftest_oled();
-static void sram_inc();
 
 bool selftest()
 {
@@ -27,24 +26,20 @@ bool selftest()
     //success &= selftest_sram();
     //selftest_oled();
     
-    sram_inc();
-    /*
-    printf("SRAM 1 \n");
     selftest_sram();
-    printf("SRAM 2 \n");
-    sram_select(2);
-    selftest_sram();
-    */
+    selftest_eeprom();
+
     return success;
 }
 
 static bool selftest_eeprom()
 {
+    printf("EEPROM Test \n");
     uint8_t val = 55;
     eeprom_write_byte(15, val);
-    printf("EEPROM: Wrote %i", val);
+    printf("EEPROM: Wrote %i \n", val);
     uint8_t response = eeprom_read_byte(15);
-    printf("EEPROM: Read %i", response);
+    printf("EEPROM: Read %i \n", response);
     if(response == val)
         return true;
     return false;
@@ -53,6 +48,7 @@ static bool selftest_eeprom()
 
 static bool selftest_sram()
 {
+    printf("SRAM Test \n");
     uint16_t val = 55;
     sram_write(15, val);
     printf("SRAM: Wrote %i \n", val);
@@ -61,18 +57,6 @@ static bool selftest_sram()
     if(response == val)
         return true;
     return false;
-}
-
-static void sram_inc()
-{
-    unsigned long i;
-    for(i=0; i<20; i+=2)
-    {
-        sram_write(i, i);
-        printf("SRAM: Wrote %lu to address %lu \n", i, i);
-        uint16_t response = sram_read(i);
-        printf("SRAM: Read %i from address %lu \n", response, i);
-    }
 }
 
 static void selftest_oled()

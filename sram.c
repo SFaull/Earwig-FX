@@ -36,10 +36,10 @@ void sram_spi_init(void)
     SPI2CON1bits.DISSCK = 0;    //clock enabled (Internal serial clock is enabled)
     SPI2CON1bits.DISSDO = 0;    //SDO enabled (SDOx pin is controlled by the module)
     SPI2CON1bits.MODE16 = 0;    //8 bit mode (set to 1 for 16 bit)
-    SPI2CON1bits.CKE = 1;       //data changes on falling edge (active to idle)
+    SPI2CON1bits.CKE = 0;       //data changes on rising edge (idle to active)
     SPI2CON1bits.CKP = 0;       //idle is low
-    SPI2CON1bits.PPRE = 2;      //1:1 primary prescaler
-    SPI2CON1bits.SPRE = 7;      //2:1 secondary prescaler (20Mhz SPI clock)
+    SPI2CON1bits.PPRE = 3;      //1:1 primary prescaler
+    SPI2CON1bits.SPRE = 6;      //2:1 secondary prescaler (20Mhz SPI clock)
     SPI2CON1bits.MSTEN = 1;     //master mode
     SPI2CON1bits.SMP = 0;       //data sampled in middle (Input data is sampled at the middle of data output time)
     SPI2STATbits.SPIEN = 1;     //enable SPI      
