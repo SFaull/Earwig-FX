@@ -48,7 +48,7 @@ static bool selftest_eeprom()
 
 static bool selftest_sram()
 {
-#if 1
+#if 0
     unsigned long i;
     for(i=0; i<AVAILABLE_MEMORY; i+=100)
     {
@@ -58,7 +58,7 @@ static bool selftest_sram()
     }
     return false;
 #endif
-#if 0
+#if 1
     printf("SRAM Test \n");
     uint16_t val = 55;
     sram_write(15, val);

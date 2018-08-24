@@ -13,8 +13,8 @@
 #define UART1_BAUDRATE    9600                          // Baud rate for UART
 #define UART1_BRGVAL      ((FCY/UART1_BAUDRATE)/16)-1   // BRG value calculated from baud rate definition
 
-#define UART2_BAUDRATE    9600                          // Baud rate for UART
-#define UART2_BRGVAL      ((FCY/UART1_BAUDRATE)/16)-1   // BRG value calculated from baud rate definition
+#define UART2_BAUDRATE    115200                        // Baud rate for UART
+#define UART2_BRGVAL      ((FCY/UART2_BAUDRATE)/16)-1   // BRG value calculated from baud rate definition
 
 
 #define UART_BUFFER_SIZE		64
