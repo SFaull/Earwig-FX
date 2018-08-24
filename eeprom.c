@@ -107,17 +107,25 @@ void eeprom_write_seq(unsigned int address, unsigned char *data)
     StartI2C1();
     WaitFlag();
     
+    IdleI2C1();
+    
 	MasterWriteI2C1(EEPROM_WRITE);			//Write Control byte
 	WaitFlag();
     WaitForACK();
     
+    IdleI2C1();
+    
     MasterWriteI2C1(address >> 8);				//Write High Address
 	WaitFlag();
     WaitForACK();
+    
+    IdleI2C1();
 	
 	MasterWriteI2C1(address);				//Write Low Address
 	WaitFlag();
     WaitForACK();
+    
+    IdleI2C1();
 
 	MasterputsI2C1(data);					//Write Data
     WaitFlag();
@@ -138,28 +146,43 @@ void eeprom_read_seq(unsigned int address, unsigned char *rdptr, unsigned char l
     StartI2C1();
     WaitFlag();
     
+    IdleI2C1();
+    
 	MasterWriteI2C1(EEPROM_WRITE);		//Write Control Byte
 	WaitFlag();
     WaitForACK();
+    
+    IdleI2C1();
     
 	MasterWriteI2C1(address >> 8);			//Write start address (high)
 	WaitFlag();
     WaitForACK();
     
+    IdleI2C1();
+    
     MasterWriteI2C1(address);			//Write start address (low))
 	WaitFlag();
     WaitForACK();
+    
+    IdleI2C1();
 
     ResetVariables_I2C1();           //send start condition
 	StartI2C1();
     WaitFlag();
     
+    IdleI2C1();
+    
 	MasterWriteI2C1(EEPROM_READ);	//Write control byte for read
 	WaitFlag();
     WaitForACK();
+    
+    
+    IdleI2C1();
 
     // TODO: perform check on return value of I2C read
 	MastergetsI2C1(length, rdptr);		//read Length number of bytes
+    
+    IdleI2C1();
     
 	NotAckI2C1();				//Send NAck
     
