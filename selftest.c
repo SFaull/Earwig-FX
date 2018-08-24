@@ -48,19 +48,17 @@ static bool selftest_eeprom()
 
 static bool selftest_sram()
 {
-#if 0
-    sram_fill(5);
-    
-    int i;
-    for(i=0; i<SRAM_SIZE; i+=2)
+#if 1
+    unsigned long i;
+    for(i=0; i<AVAILABLE_MEMORY; i+=100)
     {
         sram_write(i, 5);
         unsigned int val = sram_read(i);
-        printf("%i at address %i \n", val, i);
+        printf("%i at address %lu \n", val, i);
     }
     return false;
 #endif
-#if 1
+#if 0
     printf("SRAM Test \n");
     uint16_t val = 55;
     sram_write(15, val);

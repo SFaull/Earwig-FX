@@ -6,6 +6,7 @@
 
 #include <xc.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include "sram.h"
 #include "system.h"
 
@@ -75,56 +76,86 @@ void sram_fill(unsigned char sramdata)
 
 void sram_init(unsigned char sram_mode)
 {
-    unsigned char temp;
+    initSPI2(); // init spi
     
-    initSPI2();
-    
-    SRAM0_SS = 0;  // default to SRAM chip #1
-    
-    temp = spi_command(WRMR);   // Put into WRITE mode
-    temp = spi_command(sram_mode); // Set mode of operation
-
+    // init chip 0
+    SRAM0_SS = 0; 
+    spi_command(WRMR);   // Put into WRITE mode
+    spi_command(sram_mode); // Set mode of operation
     SRAM0_SS = 1; 
     
-    __delay_ms(50);
+    // init chip 1
+    SRAM1_SS = 0;
+    spi_command(WRMR);   // Put into WRITE mode
+    spi_command(sram_mode); // Set mode of operation
+    SRAM1_SS = 1; 
 }
 
 void sram_write(unsigned long sramaddress, unsigned int sramdata) 
 {
-    unsigned char temp;
-    
-    SRAM0_SS = 0;                     // Enable SRAM
-
-    temp = spi_command(WRITE);      // Send WRITE command, to be followed by 24-bit address
-
-    temp = spi_command(sramaddress >> 16);  // Send first 8 bits of address (16->23)
-    temp = spi_command(sramaddress >> 8);   // Send second 8 bits of address (8->15)
-    temp = spi_command(sramaddress);        // Send third 8 bits of address (0->7)
-    
-    temp = spi_command(sramdata >> 8);      // send upper byte
-    temp = spi_command(sramdata);      // send lower byte
-
-    SRAM0_SS = 1;                     // Disable SRAM
-
+    // if address is less than the size of the SRAM, use chip 0
+    if(sramaddress >= 0 && sramaddress < SRAM_SIZE)
+    {
+        SRAM0_SS = 0;                     // Enable SRAM
+        spi_command(WRITE);      // Send WRITE command, to be followed by 24-bit address
+        spi_command(sramaddress >> 16);  // Send first 8 bits of address (16->23)
+        spi_command(sramaddress >> 8);   // Send second 8 bits of address (8->15)
+        spi_command(sramaddress);        // Send third 8 bits of address (0->7)
+        spi_command(sramdata >> 8);      // send upper byte
+        spi_command(sramdata);      // send lower byte
+        SRAM0_SS = 1;                     // Disable SRAM
+    }
+    // if address is greater than the size of the SRAM, use chip 1
+    else if(sramaddress >= SRAM_SIZE && sramaddress < AVAILABLE_MEMORY)
+    {
+        sramaddress -= SRAM_SIZE;
+        
+        SRAM1_SS = 0;                     // Enable SRAM
+        spi_command(WRITE);      // Send WRITE command, to be followed by 24-bit address
+        spi_command(sramaddress >> 16);  // Send first 8 bits of address (16->23)
+        spi_command(sramaddress >> 8);   // Send second 8 bits of address (8->15)
+        spi_command(sramaddress);        // Send third 8 bits of address (0->7)
+        spi_command(sramdata >> 8);      // send upper byte
+        spi_command(sramdata);      // send lower byte
+        SRAM1_SS = 1;                     // Disable SRAM
+    }
+    else
+        printf("%lu is an invalid address. Failed to write to SRAM \n", sramaddress);
 }
 
 unsigned int sram_read(unsigned long sramaddress) 
 {
-    unsigned int temp;
-
-    SRAM0_SS = 0;                           // Enable SRAM
-
-    temp = spi_command(READ);               // Send WRITE command, to be followed by 24-bit address    
-            
-    temp = spi_command(sramaddress >> 16);  // Send first 8 bits of address (16->23)
-    temp = spi_command(sramaddress >> 8);   // Send second 8 bits of address (8->15)
-    temp = spi_command(sramaddress);        // Send third 8 bits of address (0->7)
+    unsigned int temp = 0;
     
-    temp = spi_command(255) << 8;           // receive upper byte
-    temp |= spi_command(255);               // recieve lower byte and add it to the upper.
-
-    SRAM0_SS = 1;                     // Disable SRAM
-
+    // if address is less than the size of the SRAM, use chip 0
+    if(sramaddress >= 0 && sramaddress < SRAM_SIZE)
+    {
+        SRAM0_SS = 0;                           // Enable SRAM
+        spi_command(READ);                      // Send WRITE command, to be followed by 24-bit address    
+        spi_command(sramaddress >> 16);         // Send first 8 bits of address (16->23)
+        spi_command(sramaddress >> 8);          // Send second 8 bits of address (8->15)
+        spi_command(sramaddress);               // Send third 8 bits of address (0->7)
+        temp = spi_command(255) << 8;           // receive upper byte
+        temp |= spi_command(255);               // recieve lower byte and add it to the upper.
+        SRAM0_SS = 1;                     // Disable SRAM
+    }
+    // if address is greater than the size of the SRAM, use chip 1
+    else if(sramaddress >= SRAM_SIZE && sramaddress < AVAILABLE_MEMORY)
+    {
+        sramaddress -= SRAM_SIZE;
+        
+        SRAM1_SS = 0;                           // Enable SRAM
+        spi_command(READ);                      // Send WRITE command, to be followed by 24-bit address    
+        spi_command(sramaddress >> 16);         // Send first 8 bits of address (16->23)
+        spi_command(sramaddress >> 8);          // Send second 8 bits of address (8->15)
+        spi_command(sramaddress);               // Send third 8 bits of address (0->7)
+        temp = spi_command(255) << 8;           // receive upper byte
+        temp |= spi_command(255);               // recieve lower byte and add it to the upper.
+        SRAM1_SS = 1;                     // Disable SRAM
+    }
+    else
+        printf("%lu is an invalid address. Failed to write to SRAM \n", sramaddress);
+    
     return temp;                  // Return the received data
 }
 

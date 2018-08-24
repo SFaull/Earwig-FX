@@ -26,8 +26,8 @@
 #define page 128
 
 #define SRAM_SIZE (128L * 1024L)  // 128kb
+#define AVAILABLE_MEMORY (SRAM_SIZE * 2)    // we have two SRAM chips available
 
-void sram_select(unsigned int cs);
 void sram_init(unsigned char sram_mode);
 void sram_fill(unsigned char sramdata);
 void sram_write(unsigned long sramaddress, unsigned int sramdata);
