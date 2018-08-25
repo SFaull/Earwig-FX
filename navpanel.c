@@ -16,6 +16,12 @@ static control_t pendingAction;
 void navpanel_init(void)
 {
     initTimer1();
+    
+    TRISCbits.TRISC0 = 1;      // Rotary encoder pin L
+    TRISCbits.TRISC1 = 1;      // Rotary encoder pin R
+    TRISCbits.TRISC2 = 1;      // Rotary encoder push button 
+    TRISBbits.TRISB5 = 1;      // back button
+
     pendingAction = kNone;
 }
 
@@ -57,7 +63,7 @@ void navpanel_process(void)
 
     if (wait) // wait flag enabled, begin counter (debounce)
     {
-        if (cnt >= DEBOUNCE_COUNT)  // 99 counts equates to 0.2 seconds
+        if (cnt >= DEBOUNCE_COUNT)  
         {
             cnt = 0;    // reset counter
             wait = false;   // reset wait flag

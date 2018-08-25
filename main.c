@@ -30,32 +30,39 @@ int16_t main(void)
     sram_init(seq); //initialise 23LC1024 in sequential mode
     InitI2C1(); //initialise i2c peripheral
     oled_init(); //initialise SSD1306 OLED display
-    //navpanel_init();
+    navpanel_init();
     
     selftest();
     printf("Ready \n");
     
     while(1)
     {
+        /*
         LED = 1;
         __delay_ms(500);
         LED = 0;
         __delay_ms(500);
+         */
+        
         // check for button presses and encoder rotations
-		/*
+		
         switch(navpanel_pending_action())
         {
             case kRotateCW:
+                printf("Clockwise \n");
                 break;
             case kRotateCCW:
+                printf("Counter-Clockwise \n");
                 break;
             case kOK:
+                printf("OK \n");
                 break;
             case kBack:
+                printf("Back \n");
                 break;
             default:
                 break;
         }
-		*/
+		
     }
 }
