@@ -6,37 +6,25 @@
 
 #include "system.h"
 #include "navpanel.h"
+#include "timer.h"
 #include <stdbool.h>
 
-static void initTimer1(void);
 static void knobTurned(int L, int R);
 
 static control_t pendingAction;
 
+timer_t navpanel_update_timer;
+
 void navpanel_init(void)
-{
-    initTimer1();
-    
+{    
     TRISCbits.TRISC0 = 1;      // Rotary encoder pin L
     TRISCbits.TRISC1 = 1;      // Rotary encoder pin R
     TRISCbits.TRISC2 = 1;      // Rotary encoder push button 
     TRISBbits.TRISB5 = 1;      // back button
 
     pendingAction = kNone;
-}
-
-static void initTimer1(void)   // Timer to periodically check encoder pin
-{
-    T1CONbits.TON = 0;      // Disable Timer
-    T1CONbits.TCS = 0;      // Select internal instruction cycle clock
-    T1CONbits.TGATE = 0;    // Disable Gated Timer mode
-    T1CONbits.TCKPS = 0b11; // Select 1:256 Prescaler
-    TMR1 = 0x00;            // Clear timer register
-    PR1 = ENCPRD;           // Load the period value
-    IPC0bits.T1IP = 0x01;   // Set Timer1 Interrupt Priority Level
-    IFS0bits.T1IF = 0;      // Clear Timer1 Interrupt Flag
-    IEC0bits.T1IE = 1;      // Enable Timer1 interrupt
-    T1CONbits.TON = 1;      // Start Timer
+    
+    timer_start(&navpanel_update_timer);
 }
 
 control_t navpanel_pending_action(void)
@@ -59,49 +47,55 @@ void navpanel_process(void)
     
     static bool button_back;
     static bool last_button_back;
-
-
-    if (wait) // wait flag enabled, begin counter (debounce)
+    
+    if (timer_expired(navpanel_update_timer, 5))  // run this every 20ms (expected that main loop calls this more regularly))
     {
-        if (cnt >= DEBOUNCE_COUNT)  
+        timer_start(&navpanel_update_timer);    // restart the timer
+        if (wait) // wait flag enabled, begin counter (debounce)
         {
-            cnt = 0;    // reset counter
-            wait = false;   // reset wait flag
+            if (cnt >= DEBOUNCE_COUNT)  
+            {
+                cnt = 0;    // reset counter
+                wait = false;   // reset wait flag
+            }
+            else
+                cnt++;      // increment counter
         }
-        else
-            cnt++;      // increment counter
+        else    // otherwise, check the encoder pin
+        {
+            // get encoder state
+            last_enc = enc;
+            enc = !(ROTARY_L); 
+
+            // get button states
+            last_button_ok = button_ok;     
+            button_ok = !(BUTTON_OK);
+            last_button_back = button_back;
+            button_back = !(BUTTON_BACK);
+
+            // look for state transitions
+            if(!enc && last_enc) // If a change has occured
+            {
+              knobTurned(ROTARY_L, ROTARY_R);   // send values to knobturned function
+              wait = true; // set wait flag so no turns are registered for 0.2 seconds (debounce)
+            }
+
+            if(!button_ok && last_button_ok) // If a change has occured
+            {
+              pendingAction = kOK;
+              wait = true; // set wait flag so no turns are registered for 0.2 seconds (debounce)
+            }
+
+            if(!button_back && last_button_back) // If a change has occured
+            {
+              pendingAction = kBack;
+              wait = true; // set wait flag so no turns are registered for 0.2 seconds (debounce)
+            }
+        } 
     }
-    else    // otherwise, check the encoder pin
-    {
-        // get encoder state
-        last_enc = enc;
-        enc = !(ROTARY_L); 
-        
-        // get button states
-        last_button_ok = button_ok;     
-        button_ok = !(BUTTON_OK);
-        last_button_back = button_back;
-        button_back = !(BUTTON_BACK);
 
-        // look for state transitions
-        if(!enc && last_enc) // If a change has occured
-        {
-          knobTurned(ROTARY_L, ROTARY_R);   // send values to knobturned function
-          wait = true; // set wait flag so no turns are registered for 0.2 seconds (debounce)
-        }
-        
-        if(!button_ok && last_button_ok) // If a change has occured
-        {
-          pendingAction = kOK;
-          wait = true; // set wait flag so no turns are registered for 0.2 seconds (debounce)
-        }
-        
-        if(!button_back && last_button_back) // If a change has occured
-        {
-          pendingAction = kBack;
-          wait = true; // set wait flag so no turns are registered for 0.2 seconds (debounce)
-        }
-    } 
+
+
 }
 
 static void knobTurned(int L, int R)

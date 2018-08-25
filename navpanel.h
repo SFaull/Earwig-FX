@@ -11,10 +11,7 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-#define ENCFREQ     500                     // Frequency to check encoder pin
-#define ENCPRD      ((FCY/256)/ENCFREQ)-1   // Period to check encoder pin
-
-#define DEBOUNCE_COUNT 25      // 100 counts equates to 0.2 seconds
+#define DEBOUNCE_COUNT 5
 
 #define ROTARY_L PORTCbits.RC0      // Rotary encoder pin L
 #define ROTARY_R PORTCbits.RC1      // Rotary encoder pin R

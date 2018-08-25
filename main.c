@@ -17,11 +17,15 @@
 #include "i2c.h"
 #include "selftest.h"
 #include "navpanel.h"
+#include "timer.h"
+
+timer_t led_timer;
 
 int16_t main(void)
 {
     /* Configure the oscillator for the device */
     ConfigureOscillator();
+    timer_init();
     //uart1_init();
     uart2_init();
     LED_init();
@@ -35,17 +39,20 @@ int16_t main(void)
     selftest();
     printf("Ready \n");
     
+    timer_start(&led_timer);
+    
     while(1)
     {
-        /*
-        LED = 1;
-        __delay_ms(500);
-        LED = 0;
-        __delay_ms(500);
-         */
+        navpanel_process();
         
-        // check for button presses and encoder rotations
+        // heartbeat LED
+        if(timer_expired(led_timer, 1000))
+        {
+            timer_start(&led_timer);
+            LED = !LED;
+        }
 		
+        // check for button presses and encoder rotations
         switch(navpanel_pending_action())
         {
             case kRotateCW:

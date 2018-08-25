@@ -7,7 +7,7 @@
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "navpanel.h"
+#include "timer.h"
 
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */
@@ -179,7 +179,7 @@ void __attribute__((interrupt, no_auto_psv)) _DCIInterrupt(void)
 // Run when Timer1 interrupt is triggered
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void)
 {    
-    navpanel_process();
+    timer_tick();
     
     IFS0bits.T1IF = 0; // Clear Timer1 Interrupt Flag
 }
