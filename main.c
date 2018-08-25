@@ -17,6 +17,7 @@
 #include "i2c.h"
 #include "selftest.h"
 #include "navpanel.h"
+#include "state_process.h"
 #include "timer.h"
 
 timer_t led_timer;
@@ -36,40 +37,20 @@ int16_t main(void)
     oled_init(); //initialise SSD1306 OLED display
     navpanel_init();
     
-    selftest();
+    //selftest();
+    
+    __delay_ms(1000);    // leave the splashscreen on for a short period
     printf("Ready \n");
-    
     timer_start(&led_timer);
-    
     while(1)
     {
         navpanel_process();
-        
+        state_process();
         // heartbeat LED
         if(timer_expired(led_timer, 1000))
         {
             timer_start(&led_timer);
             LED = !LED;
-        }
-		
-        // check for button presses and encoder rotations
-        switch(navpanel_pending_action())
-        {
-            case kRotateCW:
-                printf("Clockwise \n");
-                break;
-            case kRotateCCW:
-                printf("Counter-Clockwise \n");
-                break;
-            case kOK:
-                printf("OK \n");
-                break;
-            case kBack:
-                printf("Back \n");
-                break;
-            default:
-                break;
-        }
-		
+        }		
     }
 }

@@ -17,8 +17,8 @@
       <itemPath>selftest.h</itemPath>
       <itemPath>navpanel.h</itemPath>
       <itemPath>images.h</itemPath>
-      <itemPath>navpanel_process.h</itemPath>
       <itemPath>timer.h</itemPath>
+      <itemPath>state_process.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -41,8 +41,8 @@
       <itemPath>selftest.c</itemPath>
       <itemPath>navpanel.c</itemPath>
       <itemPath>images.c</itemPath>
-      <itemPath>navpanel_process.c</itemPath>
       <itemPath>timer.c</itemPath>
+      <itemPath>state_process.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
