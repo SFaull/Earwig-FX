@@ -17,7 +17,7 @@ void InitI2C1(void)
     I2C1CONbits.SCLREL = 0;     // Hold SCL clock low (clock stretch)
     I2C1CONbits.IPMIEN = 0;     // Intelligent Peripheral Management Interface Enable bit (disabled)
     I2C1CONbits.A10M = 0;       // I2CADD is 7-bit address
-    I2C1CONbits.DISSLW = 0;     // Enable Slew Rate Control for 400KHz
+    I2C1CONbits.DISSLW = 1;     // Enable Slew Rate Control for 400KHz
     I2C1CONbits.SMEN = 0;       // Disable SMBus input voltage thresholds
     I2C1CONbits.GCEN = 0;       // Disable Interrupt when General call address is received.
     I2C1CONbits.STREN = 0;      // SCL Clock Stretch Enable bit (when operating as I2C slave)
