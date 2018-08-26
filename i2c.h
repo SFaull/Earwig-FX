@@ -13,7 +13,7 @@
 #include "system.h"
 
 
-#define Fsck	100000	// 100kHz I2C 
+#define Fsck	800000	// 400kHz I2C (probvably not a great idea to run this past 400kHz but seems to work!)
 #define I2C_BRG	((FCY/2/Fsck)-1) 
 
 
