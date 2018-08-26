@@ -43,26 +43,6 @@ void state_process(void)
             currentState = kHome;
             break;
     }
-#if 0
-    // check for button presses and encoder rotations
-    switch(navpanel_pending_action())
-    {
-        case kRotateCW:
-            printf("Clockwise \n");
-            break;
-        case kRotateCCW:
-            printf("Counter-Clockwise \n");
-            break;
-        case kOK:
-            printf("OK \n");
-            break;
-        case kBack:
-            printf("Back \n");
-            break;
-        default:
-            break;
-    }
-#endif
 }
 
 static state_t do_Startup(void)

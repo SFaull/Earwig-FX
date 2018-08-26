@@ -15,10 +15,6 @@
 #include <stdbool.h>
 #include "system.h"
 
-
-#define Fsck	100000	// 100kHz I2C 
-#define I2C_BRG	((FCY/2/Fsck)-1) 
-
 #define LCDHEIGHT 64
 #define LCDWIDTH 128
 

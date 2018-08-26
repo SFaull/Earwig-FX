@@ -46,6 +46,33 @@ int16_t main(void)
     {
         navpanel_process();
         state_process();
+        
+        #if 0
+        // check for button presses and encoder rotations
+        switch(navpanel_pending_action())
+        {
+            case kRotateCW:
+                printf("Clockwise \n");
+                break;
+            case kRotateCCW:
+                printf("Counter-Clockwise \n");
+                break;
+            case kOK:
+                printf("OK \n");
+                break;
+            case kOKLong:
+                printf("OK Long \n");
+                break;
+            case kBack:
+                printf("Back \n");
+                break;
+            case kBackLong:
+                printf("Back Long \n");
+                break;
+            default:
+                break;
+        }
+    #endif
         // heartbeat LED
         if(timer_expired(led_timer, 1000))
         {

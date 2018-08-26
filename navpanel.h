@@ -23,7 +23,9 @@ typedef enum {
     kRotateCW = 1,
     kRotateCCW = 2,
     kOK = 3,
-    kBack = 4,
+    kOKLong = 4,
+    kBack = 5,
+    kBackLong = 6
 } control_t;
 
 void navpanel_init(void);

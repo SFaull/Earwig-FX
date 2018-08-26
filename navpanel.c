@@ -9,11 +9,13 @@
 #include "timer.h"
 #include <stdbool.h>
 
-static void knobTurned(int L, int R);
+static void encoder_process(void);
+static void button_process(void);
 
 static control_t pendingAction;
-
-timer_t navpanel_update_timer;
+static timer_t navpanel_update_timer;
+static timer_t navpanel_long_press_timer1;
+static timer_t navpanel_long_press_timer2;
 
 void navpanel_init(void)
 {    
@@ -35,90 +37,89 @@ control_t navpanel_pending_action(void)
 }
 
 void navpanel_process(void)
+{    
+    if (timer_expired(navpanel_update_timer, 5))  // run this every 20ms (expected that main loop calls this more regularly))
+    {
+        timer_start(&navpanel_update_timer);    // restart the timer
+        
+        encoder_process();
+        button_process();
+    } 
+}
+
+// see https://www.best-microcontroller-projects.com/rotary-encoder.html for rotary encoder algorithm
+static void encoder_process(void)
 {
-    static bool wait;        // flag used to debounce
-    static int cnt;         // counter used to debounce
+    const int8_t rot_enc_table[] = {0,1,1,0,1,0,0,1,1,0,0,1,0,1,1,0};
+    static uint8_t prevNextCode = 0;
+    static uint16_t store=0;
     
-    static bool enc;         // !encoder pin value
-    static bool last_enc;    // previous !encoder pin value
-    
+    prevNextCode <<= 2;
+    if (ROTARY_L) prevNextCode |= 0x02;
+    if (ROTARY_R) prevNextCode |= 0x01;
+    prevNextCode &= 0x0f;
+     // If valid then store as 16 bit data.
+     if  (rot_enc_table[prevNextCode] ) 
+     {
+        store <<= 4;
+        store |= prevNextCode;
+        if ((store&0xff)==0x2b) 
+            pendingAction = kRotateCCW; 
+        if ((store&0xff)==0x17) 
+            pendingAction = kRotateCW; 
+     }
+}
+
+static void button_process(void)
+{
     static bool button_ok;
     static bool last_button_ok;
     
     static bool button_back;
     static bool last_button_back;
     
-    if (timer_expired(navpanel_update_timer, 5))  // run this every 20ms (expected that main loop calls this more regularly))
+    static bool ok_pressed = false;
+    static bool back_pressed = false;
+    
+    // get button states
+    last_button_ok = button_ok;     
+    button_ok = !(BUTTON_OK);
+    last_button_back = button_back;
+    button_back = !(BUTTON_BACK);
+
+    // set a flag and start timer on any button press
+    if(button_ok && !last_button_ok)
     {
-        timer_start(&navpanel_update_timer);    // restart the timer
-        if (wait) // wait flag enabled, begin counter (debounce)
-        {
-            if (cnt >= DEBOUNCE_COUNT)  
-            {
-                cnt = 0;    // reset counter
-                wait = false;   // reset wait flag
-            }
-            else
-                cnt++;      // increment counter
-        }
-        else    // otherwise, check the encoder pin
-        {
-            // get encoder state
-            last_enc = enc;
-            enc = !(ROTARY_L); 
-
-            // get button states
-            last_button_ok = button_ok;     
-            button_ok = !(BUTTON_OK);
-            last_button_back = button_back;
-            button_back = !(BUTTON_BACK);
-
-            // look for state transitions
-            if(!enc && last_enc) // If a change has occured
-            {
-              knobTurned(ROTARY_L, ROTARY_R);   // send values to knobturned function
-              wait = true; // set wait flag so no turns are registered for 0.2 seconds (debounce)
-            }
-
-            if(!button_ok && last_button_ok) // If a change has occured
-            {
-              pendingAction = kOK;
-              wait = true; // set wait flag so no turns are registered for 0.2 seconds (debounce)
-            }
-
-            if(!button_back && last_button_back) // If a change has occured
-            {
-              pendingAction = kBack;
-              wait = true; // set wait flag so no turns are registered for 0.2 seconds (debounce)
-            }
-        } 
+      timer_start(&navpanel_long_press_timer1);
+      ok_pressed = true;
+    }
+    if(button_back && !last_button_back)
+    {
+      timer_start(&navpanel_long_press_timer2);
+      back_pressed = true;
     }
 
+    // check for long presses
+    if(button_ok && last_button_ok && ok_pressed && timer_expired(navpanel_long_press_timer1, 500))
+    {
+      pendingAction = kOKLong;
+      ok_pressed = false;
+    }
+    if(button_back && last_button_back && back_pressed && timer_expired(navpanel_long_press_timer2, 500))
+    {
+      pendingAction = kBackLong;
+      back_pressed = false;
+    }
 
-
+    // check for short releases
+    if(!button_ok && last_button_ok && ok_pressed)
+    {
+        pendingAction = kOK;
+        ok_pressed = false;
+    }
+    if(!button_back && last_button_back && back_pressed)
+    {
+        pendingAction = kBack;
+        back_pressed = false;
+    }
 }
-
-static void knobTurned(int L, int R)
-{    
-    static int state = 0;           // will store two bits for pins A & B on the encoder which we will get from the pins above
-    static int bump[] = {0,0,1,-1};
-    
-    state = 0;          // reset each time
-    state = state + L;  // add the state of Pin L
-    state <<= 1;        // shift the bit over one spot
-    state = state + R;  // add the state of Pin R
- 
-     // posible states:
-     //00 & 01 - something is wrong, do nothing
-     //10 - knob was turned forwards
-     //11 - knob was turned backwards
-     
-     switch(bump[state])
-     {
-         case 1:    pendingAction = kRotateCW;  break;
-         case -1:   pendingAction = kRotateCCW; break;
-         default:   break;
-     }
-}
-
-
