@@ -64,9 +64,9 @@ static void encoder_process(void)
         store <<= 4;
         store |= prevNextCode;
         if ((store&0xff)==0x2b) 
-            pendingAction = kRotateCCW; 
-        if ((store&0xff)==0x17) 
             pendingAction = kRotateCW; 
+        if ((store&0xff)==0x17) 
+            pendingAction = kRotateCCW; 
      }
 }
 

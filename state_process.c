@@ -20,6 +20,8 @@ static state_t do_ChainEdit(void);
 static state_t transition_A(void);
 static state_t transition_B(void);
 
+uint8_t position;
+
 void state_process(void)
 {
     switch(currentState)
@@ -56,10 +58,23 @@ static state_t do_Home(void)
         
     return kHome;
 }
+
 static state_t do_MainMenu(void)
 {
-    if (navpanel_pending_action() == kBack)
-        return transition_A();
+    switch(navpanel_pending_action()) 
+    {
+        case kRotateCW:
+            nextPosition();
+            drawMenu();
+            break;
+        case kRotateCCW:
+            prevPosition();
+            drawMenu();
+            break;
+        case kBack:
+            return transition_A();
+    }
+    
     return kMainMenu;
 }
 static state_t do_ParamEdit(void)
@@ -84,11 +99,31 @@ static state_t transition_B(void)
 {
     // TODO: update display with main menu structure
     printf("Transition to Menu Screen \n");
+    position = 0;
+    drawMenu();
+    return kMainMenu;
+}
+
+void drawMenu()
+{
+    const uint8_t temp[3] = {15, 31, 47};
     oled_clear();
     oled_println("Menu Menu");
     oled_println("Item 1");
     oled_println("Item 2");
     oled_println("Item 3");
+    oled_draw_rect(0,temp[position],126,16);
     oled_update();
-    return kMainMenu;
+}
+
+void nextPosition()
+{
+    if(position < 2)
+        position++;
+}
+
+void prevPosition()
+{
+    if(position > 0)
+        position--;
 }

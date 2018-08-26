@@ -155,7 +155,7 @@ void oled_draw_xbm(int16_t xMove, int16_t yMove, int16_t width, int16_t height, 
 }
 
 
-int8_t x_cursor = 0;
+int8_t x_cursor = 2;
 int8_t y_cursor = 0;
 
 
@@ -206,7 +206,7 @@ void oled_write_char(char c)
   }
   else
   {
-      x_cursor = 0;
+      x_cursor = 2;
       if (y_cursor < (LCDHEIGHT - 20))
       {
         y_cursor += 16;
@@ -235,7 +235,7 @@ void oled_println(char *buffer)
         buffer++;             // go to next character
     }
     y_cursor += 16;
-    x_cursor = 0;
+    x_cursor = 2;
 }
 
 // Bresenham's algorithm - thx wikipedia and Adafruit_GFX
@@ -492,7 +492,7 @@ void oled_set_pixel(int16_t x, int16_t y)
 void oled_clear(void)
 {
     memset(buffer, 0, DISPLAY_BUFFER_SIZE);
-    x_cursor = 0;
+    x_cursor = 2;
     y_cursor = 0;
 }
 
