@@ -8,6 +8,7 @@
 #include "state_process.h"
 #include "navpanel.h"
 #include "oled.h"
+#include "display.h"
 
 state_t currentState = kStartup;
 
@@ -20,7 +21,9 @@ static state_t do_ChainEdit(void);
 static state_t transition_A(void);
 static state_t transition_B(void);
 
-uint8_t position;
+static void init_mainMenu(void);
+
+menu_t mainMenu;
 
 void state_process(void)
 {
@@ -64,15 +67,15 @@ static state_t do_MainMenu(void)
     switch(navpanel_pending_action()) 
     {
         case kRotateCW:
-            nextPosition();
-            drawMenu();
+            display_nextMenuPosition(&mainMenu);
             break;
         case kRotateCCW:
-            prevPosition();
-            drawMenu();
+            display_prevMenuPosition(&mainMenu);
             break;
         case kBack:
             return transition_A();
+        default:
+            break;
     }
     
     return kMainMenu;
@@ -98,32 +101,24 @@ static state_t transition_A(void)
 static state_t transition_B(void)
 {
     // TODO: update display with main menu structure
+    init_mainMenu();
     printf("Transition to Menu Screen \n");
-    position = 0;
-    drawMenu();
+    display_drawMenu(&mainMenu);
     return kMainMenu;
 }
 
-void drawMenu()
-{
-    const uint8_t temp[3] = {15, 31, 47};
-    oled_clear();
-    oled_println("Menu Menu");
-    oled_println("Item 1");
-    oled_println("Item 2");
-    oled_println("Item 3");
-    oled_draw_rect(0,temp[position],126,16);
-    oled_update();
-}
 
-void nextPosition()
+static void init_mainMenu(void)
 {
-    if(position < 2)
-        position++;
-}
+    // setup main menu
+    mainMenu.Heading = "Main Menu";
+    mainMenu.Item[0] = "Distortion";
+    mainMenu.Item[1] = "Delay";
+    mainMenu.Item[2] = "Tremolo";
+    mainMenu.Item[3] = "Chorus";
+    mainMenu.Item[4] = "Phaser";
+    mainMenu.Item[5] = "Fuzz";
+    mainMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
+    mainMenu.SelectedPosition = 0;  // always select the top item
 
-void prevPosition()
-{
-    if(position > 0)
-        position--;
 }
