@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "timer.h"
+#include "system.h"
 
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */

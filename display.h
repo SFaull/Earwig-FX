@@ -20,5 +20,6 @@ typedef struct
 void display_drawMenu(menu_t *menu);
 void display_nextMenuPosition(menu_t *menu);
 void display_prevMenuPosition(menu_t *menu);
+int display_menuSize(menu_t *menu);
 
 #endif	/* DISPLAY_H */

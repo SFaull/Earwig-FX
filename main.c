@@ -19,6 +19,7 @@
 #include "navpanel.h"
 #include "state_process.h"
 #include "timer.h"
+#include "effect.h"
 
 timer_t led_timer;
 
@@ -36,6 +37,7 @@ int16_t main(void)
     InitI2C1(); //initialise i2c peripheral
     oled_init(); //initialise SSD1306 OLED display
     navpanel_init();
+    effects_init();
     
     //selftest();
     

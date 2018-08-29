@@ -55,6 +55,7 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
+    <Elem>.</Elem>
     <Elem>fonts</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
