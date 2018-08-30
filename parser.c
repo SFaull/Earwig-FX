@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "parser.h"
+#include <ctype.h>
 
 char inChar;          // A character read from the serial stream 
 char serial_buffer[SERIALCOMMANDBUFFER];   // Buffer of stored characters while waiting for terminator character
@@ -110,10 +111,13 @@ void readSerial(char c)
         }
 
     }
-    // TODO: Only printable characters into the buffer
+    //Only printable characters into the buffer
+    if(isprint(inChar))
+    {
         serial_buffer[bufPos++]=inChar;   // Put character into buffer
         serial_buffer[bufPos]='\0';  // Null terminate
         if (bufPos > SERIALCOMMANDBUFFER-1) bufPos=0; // wrap buffer around if full  
+    }
 
 
 }

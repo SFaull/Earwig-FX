@@ -15,3 +15,8 @@ void LED_off(void)
   printf("LED off\n"); 
   LED = 0;
 }
+
+void unrecognized(void)
+{
+    printf("What?\n"); 
+}

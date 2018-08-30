@@ -11,4 +11,5 @@
 
 void LED_on(void);
 void LED_off(void);
+void unrecognized(void);
 #endif	/* COMMANDS_H */

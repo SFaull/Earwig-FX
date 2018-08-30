@@ -50,6 +50,7 @@ int16_t main(void)
     initSerialCommand();
     addCommand("LED:ON", LED_on);       // Turns LED on
     addCommand("LED:OFF", LED_off);       // Turns LED on
+    addDefaultHandler(unrecognized);  // Handler for command that isn't matched  (says "What?") 
     while(1)
     {
         navpanel_process();
