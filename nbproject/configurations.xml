@@ -21,6 +21,8 @@
       <itemPath>state_process.h</itemPath>
       <itemPath>display.h</itemPath>
       <itemPath>effect.h</itemPath>
+      <itemPath>parser.h</itemPath>
+      <itemPath>commands.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -47,6 +49,8 @@
       <itemPath>state_process.c</itemPath>
       <itemPath>display.c</itemPath>
       <itemPath>effect.c</itemPath>
+      <itemPath>parser.c</itemPath>
+      <itemPath>commands.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

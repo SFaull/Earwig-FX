@@ -7,6 +7,8 @@
 #include <xc.h>
 #include "uart.h"
 #include <libpic30.h>
+#include <stdarg.h>
+
 /* Notes for PCB V1
  * I messed up, both UARTs are connected to pins that dont support peripheral 
  * remapping - so the following mods must be made.
@@ -90,3 +92,17 @@ static void uart2_PutChar(char c)
   while (U2STAbits.UTXBF);        // Wait for space in UART2 Tx buffer
   U2TXREG = c;                    // Write character to UART2
 }
+
+/*
+int bluetooth_printf(const char *format, ...)
+{
+    __C30_UART=1;        // temporarily redirect printf() to UART1
+    
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    
+    __C30_UART=2;        // redirect printf() to UART2
+}
+ */

@@ -20,6 +20,8 @@
 #include "state_process.h"
 #include "timer.h"
 #include "effect.h"
+#include "parser.h"
+#include "commands.h"
 
 timer_t led_timer;
 
@@ -44,6 +46,10 @@ int16_t main(void)
     __delay_ms(1000);    // leave the splashscreen on for a short period
     printf("Ready \n");
     timer_start(&led_timer);
+    
+    initSerialCommand();
+    addCommand("LED:ON", LED_on);       // Turns LED on
+    addCommand("LED:OFF", LED_off);       // Turns LED on
     while(1)
     {
         navpanel_process();
@@ -76,10 +82,12 @@ int16_t main(void)
         }
     #endif
         // heartbeat LED
+        /*
         if(timer_expired(led_timer, 1000))
         {
             timer_start(&led_timer);
             LED = !LED;
         }		
+         */
     }
 }

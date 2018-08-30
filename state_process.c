@@ -29,6 +29,7 @@ static void init_paramMenu(int index);
 menu_t mainMenu;
 menu_t paramMenu;
 
+
 void state_process(void)
 {
     switch(currentState)
@@ -165,6 +166,8 @@ static void init_paramMenu(int index)
             break;
         
         paramMenu.Item[i] = fx.Parameter[i].Name;
+        //char temp[30];
+        //sprintf(temp, "%s: %d%s", fx.Parameter[i].Name, fx.Parameter[i].Value, fx.Parameter[i].Unit);
     }
 
     paramMenu.FirstDisplayedItem = 0;    // First menu item (distortion))

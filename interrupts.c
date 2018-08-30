@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include "timer.h"
 #include "system.h"
+#include "parser.h"
 
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */
@@ -145,7 +146,8 @@ void __attribute__((interrupt, no_auto_psv)) _U2RXInterrupt(void)
     
     if (IFS1bits.U2RXIF)   // If RX interrupt flag...
     {
-        int c = U2RXREG;
+        char c = U2RXREG;
+        readSerial(c);
         IFS1bits.U2RXIF  =  0;          // reset interrupt flag
     }
 } 
