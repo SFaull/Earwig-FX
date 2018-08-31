@@ -9,6 +9,7 @@
 #ifndef EFFECT_H
 #define	EFFECT_H
 
+#define FX_COUNT 2
 #define MAX_PARAMETERS 3
 
 #include <stdio.h>
@@ -30,6 +31,8 @@ typedef struct{
 } effect_t;
 
 void effects_init(void);
-effect_t effect_get_by_index(int i);
+effect_t *effect_get_by_index(int i);
+
+extern effect_t fx[FX_COUNT];
 
 #endif	/* EFFECT_H */

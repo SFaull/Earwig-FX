@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "state_process.h"
 #include "navpanel.h"
 #include "oled.h"
@@ -112,7 +113,7 @@ static state_t do_ChainEdit(void)
 static state_t transition_A(void)
 {
     // TODO: update display with effect chain summary
-    printf("Transition to Home Screen \n");
+    printf("Transition A \n");
     oled_clear();
     oled_println("Home");
     oled_update();
@@ -122,7 +123,7 @@ static state_t transition_B(void)
 {
     // TODO: update display with main menu structure
     init_mainMenu();
-    printf("Transition to Menu Screen \n");
+    printf("Transition B \n");
     display_drawMenu(&mainMenu);
     return kMainMenu;
 }
@@ -131,46 +132,49 @@ static state_t transition_C(void)
 {
     int index = mainMenu.SelectedPosition + mainMenu.FirstDisplayedItem;
     init_paramMenu(index);
-    printf("Transition to Param Edit Screen \n");
+    printf("Transition C \n");
     display_drawMenu(&paramMenu);
     return kParamEdit;
 }
 
 static void init_mainMenu(void)
 {
+    int i;
     // setup main menu
     mainMenu.Heading = "Main Menu";
-    mainMenu.Item[0] = "Delay";
-    mainMenu.Item[1] = "Distortion";
-    //mainMenu.Item[2] = "Tremolo";
-    //mainMenu.Item[3] = "Chorus";
-    //mainMenu.Item[4] = "Phaser";
-    //mainMenu.Item[5] = "Fuzz";
+    for(i=0; i<FX_COUNT; i++)
+        mainMenu.Item[i] = fx[i].Name;
+
     mainMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
     mainMenu.SelectedPosition = 0;  // always select the top item
 
 }
 
+
 static void init_paramMenu(int index)
 {
+    static char temp[MAX_PARAMETERS][30];   // buffer to hold the string we construct and pass to paramMenu item (if this is not static, it gets wiped and we get nonsense printed to display)
+    
     // this shows the principal of what the menu should like, but really we want to modify the object
     // therefore we need to retried a reference to it rather than creating a new instance
-    effect_t fx = effect_get_by_index(index);
+    
+    printf("[%s]\n", fx[index].Name);
 
-    paramMenu.Heading = fx.Name;
+    paramMenu.Heading = fx[index].Name;
     
     int i;
     for(i=0; i<MAX_PARAMETERS; i++)  
     {
-        if (fx.Parameter[i].Name == NULL)
-            break;
-        
-        paramMenu.Item[i] = fx.Parameter[i].Name;
-        //char temp[30];
-        //sprintf(temp, "%s: %d%s", fx.Parameter[i].Name, fx.Parameter[i].Value, fx.Parameter[i].Unit);
+        if (fx[index].Parameter[i].Name == NULL)
+            paramMenu.Item[i] = NULL;
+        else
+        {
+            sprintf(temp[i], "%s: %d%s \0", fx[index].Parameter[i].Name, fx[index].Parameter[i].Value, fx[index].Parameter[i].Unit);
+            //paramMenu.Item[i] = malloc(sizeof(char) * 30);
+            paramMenu.Item[i] = temp[i];
+        }
     }
 
     paramMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
     paramMenu.SelectedPosition = 0;  // always select the top item
-
 }

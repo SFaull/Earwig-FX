@@ -7,12 +7,15 @@
 #include "oled.h"
 #include "display.h"
 #include <stdio.h>
+#include "state_process.h"
 
 #define ARRAY_SIZE(x) ( sizeof(x) / sizeof((x)[0]) ) 
 #define MAX_ITEMS 3
 
 void display_drawMenu(menu_t *menu)
 {
+    printf("DISPLAY: %s \n", menu->Item[0]);
+
     int i;
     const uint8_t temp[3] = {15, 31, 47};
     
@@ -20,8 +23,11 @@ void display_drawMenu(menu_t *menu)
     oled_println(menu->Heading);
     for (i=0; i<MAX_ITEMS; i++)
     {
-        char *item = menu->Item[menu->FirstDisplayedItem + i];
-        oled_println(item);
+        char item = menu->Item[menu->FirstDisplayedItem + i];
+        //char item[30];
+        //strcpy(item, menu->Item[menu->FirstDisplayedItem + i]);
+        printf("DISPLAYED: %s \n", *menu->Item[menu->FirstDisplayedItem + i]);
+        oled_println(menu->Item[menu->FirstDisplayedItem + i]);
     }
 
     oled_draw_rect(0,temp[menu->SelectedPosition],126,16);

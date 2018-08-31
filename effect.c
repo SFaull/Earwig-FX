@@ -6,11 +6,14 @@
 
 #include "effect.h"
 #include <stdbool.h>
+#include <stdio.h>
 
-effect_t fx[2];
+effect_t fx[FX_COUNT];
 
 void effects_init(void)
-{        
+{       
+    //fx[0].Name = "test";
+    
     fx[0].Index = 0;
     fx[0].Name = "Delay";
     fx[0].Parameter[0].Name = "Delay Time";
@@ -27,9 +30,12 @@ void effects_init(void)
     fx[1].Parameter[0].Unit = "%";
     fx[1].Parameter[0].Value = 50;
     fx[1].Enabled = false;
+     
 }
 
-effect_t effect_get_by_index(int i)
+effect_t *effect_get_by_index(int i)
 {
-    return fx[i];
+   effect_t *my = malloc(sizeof(effect_t));
+   //*my = fx[i];
+   return my;
 }
