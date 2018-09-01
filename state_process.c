@@ -33,6 +33,7 @@ static void init_paramMenu();
 static void refresh_paramMenu();
 static void incValue(void);
 static void decValue(void);
+static void drawFxChain(void);
 
 static int index;
 static effect_t *currentFx;
@@ -141,11 +142,8 @@ static state_t do_ParamEdit(void)
 
 static state_t transition_A(void)
 {
-    // TODO: update display with effect chain summary
+    drawFxChain();
     printf("Transition A \n");
-    oled_clear();
-    oled_println("Home");
-    oled_update();
     return kHome;
 }
 static state_t transition_B(void)
@@ -279,4 +277,46 @@ static void decValue(void)
         refresh_paramMenu();
         menu_draw(&paramMenu);
     }
+}
+
+static void drawFxChain(void)
+{
+    int count = 0;
+    char *enabled_fx_names[FX_COUNT];
+    
+    int i;
+    for(i=0; i<FX_COUNT; i++)
+    {
+        if(fx[i].Enabled)
+        {
+            enabled_fx_names[count] = fx[i].Name;
+            count++;
+        }
+    }
+    oled_clear();
+    oled_println("Home");
+    
+    if (count == 0)
+        oled_println("No Effects...");
+    else
+    {
+        for(i=0; i<count; i++)
+        {
+            int pad = 20;
+            int x = (LCDWIDTH/count)*i;
+            int y = pad;
+            int w = (LCDWIDTH-pad)/count;
+            int h = LCDHEIGHT-(2*pad);
+            oled_draw_rect(x,y,w,h);
+
+            char shorthand_name[5];     // Destination string
+            strncpy(shorthand_name, enabled_fx_names[i], 4);
+            shorthand_name[4] = 0; // null terminate destination
+            int name_width = oled_get_string_width(shorthand_name);
+            printf("NAME: %s", shorthand_name);
+            oled_set_coord(x+(w/2)-(name_width/2), pad+(h/2)-7);
+            oled_write_string(shorthand_name);
+        }   
+    }    
+    oled_update();
 }

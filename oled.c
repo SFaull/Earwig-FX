@@ -218,6 +218,25 @@ void oled_write_char(char c)
   }
 }
 
+int oled_get_char_width(char c)
+{  
+  int char_index = c - 32;
+  int width = Calibri15[Calibri15_FIRST_WIDTH + char_index];
+  return width;
+}
+
+
+int oled_get_string_width(char *buffer)
+{
+    int width = 0;
+    while(*buffer != '\0')    // note: last el of array should be \0
+    {      
+        width += oled_get_char_width(*buffer) + 1; // write character
+        buffer++;             // go to next character
+    }
+    return width;
+}
+
 void oled_write_string(char *buffer)
 {
     while(*buffer != '\0')    // note: last el of array should be \0
@@ -236,6 +255,12 @@ void oled_println(char *buffer)
     }
     y_cursor += 16;
     x_cursor = 2;
+}
+
+void oled_set_coord(int x, int y)
+{
+    x_cursor = x;
+    y_cursor = y;
 }
 
 // Bresenham's algorithm - thx wikipedia and Adafruit_GFX

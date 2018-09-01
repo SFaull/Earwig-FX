@@ -44,7 +44,7 @@ void effect_init(void)
     fx[2].Parameter[0].Value = 4;
     fx[2].Parameter[0].Min = 1;
     fx[2].Parameter[0].Max = 20;
-    fx[2].Enabled = false;
+    fx[2].Enabled = true;
     
     fx[3].Name = "Chorus";
     fx[3].Parameter[0].Name = "Frequency";
