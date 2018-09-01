@@ -14,8 +14,6 @@
 
 void menu_draw(menu_t *menu)
 {
-    printf("DISPLAY: %s \n", menu->Item[0]);
-
     int i;
     const uint8_t temp[3] = {15, 31, 47};
     
@@ -26,7 +24,6 @@ void menu_draw(menu_t *menu)
         char item = menu->Item[menu->FirstDisplayedItem + i];
         //char item[30];
         //strcpy(item, menu->Item[menu->FirstDisplayedItem + i]);
-        printf("DISPLAYED: %s \n", *menu->Item[menu->FirstDisplayedItem + i]);
         oled_println(menu->Item[menu->FirstDisplayedItem + i]);
     }
 

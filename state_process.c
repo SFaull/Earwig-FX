@@ -155,11 +155,6 @@ static void init_paramMenu(int index)
 {
     static char temp[MAX_PARAMETERS][30];   // buffer to hold the string we construct and pass to paramMenu item (if this is not static, it gets wiped and we get nonsense printed to display)
     
-    // this shows the principal of what the menu should like, but really we want to modify the object
-    // therefore we need to retried a reference to it rather than creating a new instance
-    
-    printf("[%s]\n", fx[index].Name);
-
     paramMenu.Heading = fx[index].Name;
     
     int i;

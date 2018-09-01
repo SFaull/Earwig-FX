@@ -143,11 +143,11 @@ void __attribute__((interrupt, no_auto_psv)) _U2TXInterrupt(void)
 
 void __attribute__((interrupt, no_auto_psv)) _U2RXInterrupt(void) 
 { 
-    
+    char received;
     if (IFS1bits.U2RXIF)   // If RX interrupt flag...
     {
-        char c = U2RXREG;
-        parser_process(c);
+        received = U2RXREG;
+        parser_process(&received);
         IFS1bits.U2RXIF  =  0;          // reset interrupt flag
     }
 } 

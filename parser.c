@@ -49,40 +49,22 @@ char *parser_next()
 // This checks the Serial stream for characters, and assembles them into a buffer.  
 // When the terminator character (default '\r') is seen, it starts parsing the 
 // buffer for a prefix command, and calls handlers setup by addCommand() member
-void parser_process(char c) 
+void parser_process(char *c) 
 {
     int i; 
     bool matched; 
     
-    inChar = c;
+    inChar = *c;
     
-    #ifdef SERIALCOMMANDDEBUG
-    printf(inChar);   // Echo back to serial stream
-    #endif
     if (inChar==term) {     // Check for the terminator (default '\r') meaning end of command
-        #ifdef SERIALCOMMANDDEBUG
-        printf("Received: "); 
-        printf(serial_buffer);
-        #endif
         bufPos=0;           // Reset to start of buffer
         token = strtok_r(serial_buffer,delim,&last);   // Search for command at start of buffer
         if (token == NULL) return; 
         matched=false; 
         for (i=0; i<numCommand; i++) {
-            #ifdef SERIALCOMMANDDEBUG
-            printf("Comparing ["); 
-            printf(token); 
-            printf("] to [");
-            printf(CommandList[i].command);
-            printf("]");
-            #endif
             // Compare the found command against the list of known commands for a match
             if (strncmp(token,CommandList[i].command,SERIALCOMMANDBUFFER) == 0) 
             {
-                #ifdef SERIALCOMMANDDEBUG
-                printf("Matched Command: "); 
-                printf(token);
-                #endif
                 // Execute the stored handler function for the command
                 (*CommandList[i].function)(); 
                 clearBuffer(); 
@@ -112,14 +94,7 @@ void parser_process(char c)
 // to the handler function to deal with it. 
 void parser_addCommand(const char *command, void (*function)())
 {
-	if (numCommand < MAXSERIALCOMMANDS) {
-		#ifdef SERIALCOMMANDDEBUG
-		printf(numCommand); 
-		printf("-"); 
-		printf("Adding command for "); 
-		printf(command); 
-		#endif
-		
+	if (numCommand < MAXSERIALCOMMANDS) {		
 		strncpy(CommandList[numCommand].command,command,SERIALCOMMANDBUFFER); 
 		CommandList[numCommand].function = function; 
 		numCommand++; 
@@ -127,9 +102,6 @@ void parser_addCommand(const char *command, void (*function)())
 		// In this case, you tried to push more commands into the buffer than it is compiled to hold.  
 		// Not much we can do since there is no real visible error assertion, we just ignore adding
 		// the command
-		#ifdef SERIALCOMMANDDEBUG
-		printf("Too many handlers - recompile changing MAXSERIALCOMMANDS"); 
-		#endif 
 	}
 }
 
