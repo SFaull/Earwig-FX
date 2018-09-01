@@ -29,6 +29,7 @@ static state_t transition_F(void);
 static state_t transition_G(void);
 
 static void init_mainMenu(void);
+static void refresh_mainMenu(void);
 static void init_paramMenu();
 static void refresh_paramMenu();
 static void incValue(void);
@@ -92,8 +93,13 @@ static state_t do_MainMenu(void)
             break;
         case kBack:
             return transition_A();
-        case kOK:
+        case kOKLong:
             return transition_C();
+        case kOK:
+            fx[mainMenu.SelectedPosition + mainMenu.FirstDisplayedItem].Enabled = (fx[mainMenu.SelectedPosition + mainMenu.FirstDisplayedItem].Enabled==0 ?  1 : 0);
+            refresh_mainMenu();
+            menu_draw(&mainMenu);
+            break;
         default:
             break;
     }
@@ -201,21 +207,47 @@ static state_t transition_G(void)
 
 static void init_mainMenu(void)
 {
+    static char temp[FX_COUNT][25];
+    
     int i;
     // setup main menu
     mainMenu.Heading = "Main Menu";
     for(i=0; i<FX_COUNT; i++)
-        mainMenu.Item[i] = fx[i].Name;
+    {
+        if (fx[i].Enabled)
+            sprintf(temp[i], "[x] %s", fx[i].Name);
+        else
+            sprintf(temp[i], "[  ] %s", fx[i].Name);
+        //paramMenu.Item[i] = malloc(sizeof(char) * 30);
+        mainMenu.Item[i] = temp[i];
+    }
 
     mainMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
     mainMenu.SelectedPosition = 0;  // always select the top item
+}
 
+static void refresh_mainMenu(void)
+{
+    static char temp[FX_COUNT][25];
+    
+    int i;
+    // setup main menu
+    mainMenu.Heading = "Main Menu";
+    for(i=0; i<FX_COUNT; i++)
+    {
+        if (fx[i].Enabled)
+            sprintf(temp[i], "[x] %s", fx[i].Name);
+        else
+            sprintf(temp[i], "[  ] %s", fx[i].Name);
+        //paramMenu.Item[i] = malloc(sizeof(char) * 30);
+        mainMenu.Item[i] = temp[i];
+    }
 }
 
 
 static void init_paramMenu()
 {
-    static char temp[MAX_PARAMETERS][30];   // buffer to hold the string we construct and pass to paramMenu item (if this is not static, it gets wiped and we get nonsense printed to display)
+    static char temp[MAX_PARAMETERS][25];   // buffer to hold the string we construct and pass to paramMenu item (if this is not static, it gets wiped and we get nonsense printed to display)
     
     paramMenu.Heading = currentFx->Name;
     
@@ -238,7 +270,7 @@ static void init_paramMenu()
 
 static void refresh_paramMenu()
 {
-    static char temp[MAX_PARAMETERS][30];   // buffer to hold the string we construct and pass to paramMenu item (if this is not static, it gets wiped and we get nonsense printed to display)
+    static char temp[MAX_PARAMETERS][25];   // buffer to hold the string we construct and pass to paramMenu item (if this is not static, it gets wiped and we get nonsense printed to display)
     
     paramMenu.Heading = currentFx->Name;
     

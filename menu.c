@@ -27,7 +27,7 @@ void menu_draw(menu_t *menu)
         oled_println(menu->Item[menu->FirstDisplayedItem + i]);
     }
 
-    oled_draw_rect(0,temp[menu->SelectedPosition],126,16);
+    oled_draw_rect(0,temp[menu->SelectedPosition],LCDWIDTH-2,LCDHEIGHT/(MAX_ITEMS+1)+1);
     oled_update();
 }
 
