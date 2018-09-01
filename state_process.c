@@ -23,6 +23,7 @@ static state_t do_ChainEdit(void);
 static state_t transition_A(void);
 static state_t transition_B(void);
 static state_t transition_C(void);
+static state_t transition_D(void);
 
 static void init_mainMenu(void);
 static void init_paramMenu(int index);
@@ -99,7 +100,7 @@ static state_t do_ParamEdit(void)
             menu_prevPos(&paramMenu);
             break;
         case kBack:
-            return transition_B();
+            return transition_D();
         default:
             break;
     }
@@ -121,7 +122,6 @@ static state_t transition_A(void)
 }
 static state_t transition_B(void)
 {
-    // TODO: update display with main menu structure
     init_mainMenu();
     printf("Transition B \n");
     menu_draw(&mainMenu);
@@ -135,6 +135,13 @@ static state_t transition_C(void)
     printf("Transition C \n");
     menu_draw(&paramMenu);
     return kParamEdit;
+}
+
+static state_t transition_D(void)
+{
+    printf("Transition D \n");
+    menu_draw(&mainMenu);
+    return kMainMenu;
 }
 
 static void init_mainMenu(void)
