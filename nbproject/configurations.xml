@@ -23,6 +23,7 @@
       <itemPath>effect.h</itemPath>
       <itemPath>parser.h</itemPath>
       <itemPath>commands.h</itemPath>
+      <itemPath>version.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

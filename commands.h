@@ -9,7 +9,6 @@
 #ifndef COMMANDS_H
 #define	COMMANDS_H
 
-void LED_on(void);
-void LED_off(void);
-void unrecognized(void);
+void commands_init(void);
+
 #endif	/* COMMANDS_H */
