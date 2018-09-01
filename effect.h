@@ -21,6 +21,8 @@ typedef struct{
     char *Name;
     char *Unit;
     int Value;
+    int Min;
+    int Max;
 } param_t;
 
 typedef struct{

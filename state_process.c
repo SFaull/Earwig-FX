@@ -31,6 +31,8 @@ static state_t transition_G(void);
 static void init_mainMenu(void);
 static void init_paramMenu();
 static void refresh_paramMenu();
+static void incValue(void);
+static void decValue(void);
 
 static int index;
 static effect_t *currentFx;
@@ -122,23 +124,15 @@ static state_t do_ParamEdit(void)
     switch(navpanel_getControl()) 
     {
         case kOK:
-            // save
-            return transition_F();
+            return transition_F();  // save
         case kRotateCW:
-            // increment
-            currentParameterValue++;
-            refresh_paramMenu();
-            menu_draw(&paramMenu);
+            incValue();
             break;
         case kRotateCCW:
-            // decrement
-            currentParameterValue--;
-            refresh_paramMenu();
-            menu_draw(&paramMenu);
+            decValue();
             break;
         case kBack:
-            // dont save
-            return transition_G();
+            return transition_G();  // cancel
         default:
             break;
     }
@@ -264,5 +258,25 @@ static void refresh_paramMenu()
             //paramMenu.Item[i] = malloc(sizeof(char) * 30);
             paramMenu.Item[i] = temp[i];
         }
+    }
+}
+
+static void incValue(void)
+{
+    if (currentParameterValue < currentFx->Parameter[index].Max)
+    {
+        currentParameterValue++;
+        refresh_paramMenu();
+        menu_draw(&paramMenu);
+    }
+}
+
+static void decValue(void)
+{
+    if (currentParameterValue > currentFx->Parameter[index].Min)
+    {
+        currentParameterValue--;
+        refresh_paramMenu();
+        menu_draw(&paramMenu);
     }
 }
