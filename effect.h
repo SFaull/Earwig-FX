@@ -9,7 +9,7 @@
 #ifndef EFFECT_H
 #define	EFFECT_H
 
-#define FX_COUNT 2
+#define FX_COUNT 4
 #define MAX_PARAMETERS 3
 
 #include <stdio.h>
@@ -24,7 +24,6 @@ typedef struct{
 } param_t;
 
 typedef struct{
-    uint8_t Index;
     char *Name;
     param_t Parameter[MAX_PARAMETERS];
     bool Enabled;
