@@ -29,7 +29,7 @@ typedef struct{
     bool Enabled;
 } effect_t;
 
-void effects_init(void);
+void effect_init(void);
 effect_t *effect_get_by_index(int i);
 
 extern effect_t fx[FX_COUNT];

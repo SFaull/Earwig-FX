@@ -9,7 +9,7 @@
 #include "state_process.h"
 #include "navpanel.h"
 #include "oled.h"
-#include "display.h"
+#include "menu.h"
 #include "effect.h"
 
 state_t currentState = kStartup;
@@ -62,7 +62,7 @@ static state_t do_Startup(void)
 }
 static state_t do_Home(void)
 {
-    if (navpanel_pending_action() == kOK)
+    if (navpanel_getControl() == kOK)
         return transition_B();
         
     return kHome;
@@ -70,13 +70,13 @@ static state_t do_Home(void)
 
 static state_t do_MainMenu(void)
 {
-    switch(navpanel_pending_action()) 
+    switch(navpanel_getControl()) 
     {
         case kRotateCW:
-            display_nextMenuPosition(&mainMenu);
+            menu_nextPos(&mainMenu);
             break;
         case kRotateCCW:
-            display_prevMenuPosition(&mainMenu);
+            menu_prevPos(&mainMenu);
             break;
         case kBack:
             return transition_A();
@@ -90,13 +90,13 @@ static state_t do_MainMenu(void)
 }
 static state_t do_ParamEdit(void)
 {
-    switch(navpanel_pending_action()) 
+    switch(navpanel_getControl()) 
     {
         case kRotateCW:
-            display_nextMenuPosition(&paramMenu);
+            menu_nextPos(&paramMenu);
             break;
         case kRotateCCW:
-            display_prevMenuPosition(&paramMenu);
+            menu_prevPos(&paramMenu);
             break;
         case kBack:
             return transition_B();
@@ -124,7 +124,7 @@ static state_t transition_B(void)
     // TODO: update display with main menu structure
     init_mainMenu();
     printf("Transition B \n");
-    display_drawMenu(&mainMenu);
+    menu_draw(&mainMenu);
     return kMainMenu;
 }
 
@@ -133,7 +133,7 @@ static state_t transition_C(void)
     int index = mainMenu.SelectedPosition + mainMenu.FirstDisplayedItem;
     init_paramMenu(index);
     printf("Transition C \n");
-    display_drawMenu(&paramMenu);
+    menu_draw(&paramMenu);
     return kParamEdit;
 }
 

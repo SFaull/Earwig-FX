@@ -39,7 +39,7 @@ int16_t main(void)
     InitI2C1(); //initialise i2c peripheral
     oled_init(); //initialise SSD1306 OLED display
     navpanel_init();
-    effects_init();
+    effect_init();
     
     //selftest();
     
@@ -55,7 +55,7 @@ int16_t main(void)
         
         #if 0
         // check for button presses and encoder rotations
-        switch(navpanel_pending_action())
+        switch(navpanel_getControl())
         {
             case kRotateCW:
                 printf("Clockwise \n");

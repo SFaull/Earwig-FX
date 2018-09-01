@@ -29,7 +29,7 @@ void navpanel_init(void)
     timer_start(&navpanel_update_timer);
 }
 
-control_t navpanel_pending_action(void)
+control_t navpanel_getControl(void)
 {
     control_t action = pendingAction;
     pendingAction = kNone;

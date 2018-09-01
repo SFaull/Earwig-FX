@@ -29,7 +29,7 @@ typedef enum {
 } control_t;
 
 void navpanel_init(void);
-control_t navpanel_pending_action(void);
+control_t navpanel_getControl(void);
 void navpanel_process(void);
 
 #endif	/* NAVPANEL_H */

@@ -24,11 +24,12 @@ int usingSoftwareSerial;            // Used as boolean to see if we're using Sof
 
 
 
-char *
+static char *
 strtok_r (char *s, const char *delim, char **save_ptr);
+static void clearBuffer();
 
 // Constructor makes sure some things are set. 
-void initSerialCommand()
+void parser_init()
 {
 	strncpy(delim," ",MAXDELIMETER);  // strtok_r needs a null-terminated string
 	term='\r';   // return character, default terminator for commands
@@ -36,25 +37,9 @@ void initSerialCommand()
 	clearBuffer(); 
 }
 
-
-
-
-//
-// Initialize the command buffer being processed to all null characters
-//
-void clearBuffer()
-{
-    int i;
-	for (i=0; i<SERIALCOMMANDBUFFER; i++) 
-	{
-		serial_buffer[i]='\0';
-	}
-	bufPos=0; 
-}
-
 // Retrieve the next token ("word" or "argument") from the Command buffer.  
 // returns a NULL if no more tokens exist.   
-char *next() 
+char *parser_next() 
 {
 	char *nextToken;
 	nextToken = strtok_r(NULL, delim, &last); 
@@ -64,7 +49,7 @@ char *next()
 // This checks the Serial stream for characters, and assembles them into a buffer.  
 // When the terminator character (default '\r') is seen, it starts parsing the 
 // buffer for a prefix command, and calls handlers setup by addCommand() member
-void readSerial(char c) 
+void parser_process(char c) 
 {
     int i; 
     bool matched; 
@@ -125,7 +110,7 @@ void readSerial(char c)
 // Adds a "command" and a handler function to the list of available commands.  
 // This is used for matching a found token in the buffer, and gives the pointer
 // to the handler function to deal with it. 
-void addCommand(const char *command, void (*function)())
+void parser_addCommand(const char *command, void (*function)())
 {
 	if (numCommand < MAXSERIALCOMMANDS) {
 		#ifdef SERIALCOMMANDDEBUG
@@ -150,16 +135,27 @@ void addCommand(const char *command, void (*function)())
 
 // This sets up a handler to be called in the event that the receveived command string
 // isn't in the list of things with handlers.
-void addDefaultHandler(void (*function)())
+void parser_addDefaultHandler(void (*function)())
 {
 	defaultHandler = function;
 }
 
 
+//
+// Initialize the command buffer being processed to all null characters
+//
+static void clearBuffer()
+{
+    int i;
+	for (i=0; i<SERIALCOMMANDBUFFER; i++) 
+	{
+		serial_buffer[i]='\0';
+	}
+	bufPos=0; 
+}
 
 
-
-char *
+static char *
 strtok_r (char *s, const char *delim, char **save_ptr)
 {
   char *end;

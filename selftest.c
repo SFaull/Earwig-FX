@@ -36,9 +36,9 @@ static bool selftest_eeprom()
 {
     printf("EEPROM Test \n");
     uint8_t val = 55;
-    eeprom_write_byte(15, val);
+    eeprom_writeByte(15, val);
     printf("EEPROM: Wrote %i \n", val);
-    uint8_t response = eeprom_read_byte(15);
+    uint8_t response = eeprom_readByte(15);
     printf("EEPROM: Read %i \n", response);
     if(response == val)
         return true;

@@ -1,13 +1,13 @@
 /*
- * File:        display.h
+ * File:        menu.h
  * Author:      Sam Faull
  * Description: 
  */
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef DISPLAY_H
-#define	DISPLAY_H
+#ifndef MENU_H
+#define	MENU_H
 
 typedef struct
 {
@@ -17,9 +17,9 @@ typedef struct
     uint8_t FirstDisplayedItem;
 } menu_t;
 
-void display_drawMenu(menu_t *menu);
-void display_nextMenuPosition(menu_t *menu);
-void display_prevMenuPosition(menu_t *menu);
-int display_menuSize(menu_t *menu);
+void menu_draw(menu_t *menu);
+void menu_nextPos(menu_t *menu);
+void menu_prevPos(menu_t *menu);
+int menu_getCount(menu_t *menu);
 
-#endif	/* DISPLAY_H */
+#endif	/* MENU_H */

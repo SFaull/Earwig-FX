@@ -147,7 +147,7 @@ void __attribute__((interrupt, no_auto_psv)) _U2RXInterrupt(void)
     if (IFS1bits.U2RXIF)   // If RX interrupt flag...
     {
         char c = U2RXREG;
-        readSerial(c);
+        parser_process(c);
         IFS1bits.U2RXIF  =  0;          // reset interrupt flag
     }
 } 

@@ -10,7 +10,7 @@
 
 effect_t fx[FX_COUNT];
 
-void effects_init(void)
+void effect_init(void)
 {       
     fx[0].Name = "Delay";
     fx[0].Parameter[0].Name = "Delay Time";
@@ -42,11 +42,4 @@ void effects_init(void)
     fx[3].Parameter[0].Value = 2;
     fx[3].Enabled = false;
      
-}
-
-effect_t *effect_get_by_index(int i)
-{
-   effect_t *my = malloc(sizeof(effect_t));
-   //*my = fx[i];
-   return my;
 }

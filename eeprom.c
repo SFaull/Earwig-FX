@@ -9,7 +9,7 @@
 #include "eeprom.h"
 #include <stdio.h>
 
-void eeprom_write_byte(unsigned int address, unsigned char data)
+void eeprom_writeByte(unsigned int address, unsigned char data)
 {    
     ResetVariables_I2C1();
     StartI2C1();
@@ -47,7 +47,7 @@ void eeprom_write_byte(unsigned int address, unsigned char data)
     IdleI2C1();	//Wait to complete  
 }
 
-unsigned char eeprom_read_byte(unsigned int address)
+unsigned char eeprom_readByte(unsigned int address)
 {    
     ResetVariables_I2C1();
     StartI2C1();
@@ -101,7 +101,7 @@ unsigned char eeprom_read_byte(unsigned int address)
     return data;
 }
 
-void eeprom_write_seq(unsigned int address, unsigned char *data)
+void eeprom_writeSeq(unsigned int address, unsigned char *data)
 {    
     ResetVariables_I2C1();
     StartI2C1();
@@ -140,7 +140,7 @@ void eeprom_write_seq(unsigned int address, unsigned char *data)
 }
 
 
-void eeprom_read_seq(unsigned int address, unsigned char *rdptr, unsigned char length)
+void eeprom_readSeq(unsigned int address, unsigned char *rdptr, unsigned char length)
 {
     ResetVariables_I2C1();
     StartI2C1();

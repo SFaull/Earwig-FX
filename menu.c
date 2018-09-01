@@ -1,18 +1,18 @@
 /*
- * File:        display.c
+ * File:        menu.c
  * Author:      Sam Faull
  * Description: 
  */
 
 #include "oled.h"
-#include "display.h"
+#include "menu.h"
 #include <stdio.h>
 #include "state_process.h"
 
 #define ARRAY_SIZE(x) ( sizeof(x) / sizeof((x)[0]) ) 
 #define MAX_ITEMS 3
 
-void display_drawMenu(menu_t *menu)
+void menu_draw(menu_t *menu)
 {
     printf("DISPLAY: %s \n", menu->Item[0]);
 
@@ -34,19 +34,19 @@ void display_drawMenu(menu_t *menu)
     oled_update();
 }
 
-void display_nextMenuPosition(menu_t *menu)
+void menu_nextPos(menu_t *menu)
 {
-    if(menu->SelectedPosition < MAX_ITEMS-1 && menu->SelectedPosition < display_menuSize(menu)-2)
+    if(menu->SelectedPosition < MAX_ITEMS-1 && menu->SelectedPosition < menu_getCount(menu)-2)
         menu->SelectedPosition++;
     else if ((menu->FirstDisplayedItem + MAX_ITEMS) > ARRAY_SIZE(menu->Item) || strlen(menu->Item[menu->FirstDisplayedItem + MAX_ITEMS]) > 0)
         menu->FirstDisplayedItem++;
     else
         return;
     
-    display_drawMenu(menu);
+    menu_draw(menu);
 }
 
-void display_prevMenuPosition(menu_t *menu)
+void menu_prevPos(menu_t *menu)
 {
     if(menu->SelectedPosition > 0)
         menu->SelectedPosition--;
@@ -55,10 +55,10 @@ void display_prevMenuPosition(menu_t *menu)
     else
         return;
     
-    display_drawMenu(menu);
+    menu_draw(menu);
 }
 
-int display_menuSize(menu_t *menu)
+int menu_getCount(menu_t *menu)
 {
     int i;
     for(i=0; i<ARRAY_SIZE(menu->Item); i++)
