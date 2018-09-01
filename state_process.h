@@ -13,8 +13,8 @@ typedef enum {
     kStartup = 0,
     kHome = 1,
     kMainMenu = 2,
-    kParamEdit = 3,
-    kChainEdit = 4        
+    kParamMenu = 3,
+    kParamEdit = 4   
 } state_t;
 
 void state_process(void);

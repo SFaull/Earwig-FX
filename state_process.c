@@ -17,16 +17,24 @@ state_t currentState = kStartup;
 static state_t do_Startup(void);
 static state_t do_Home(void);
 static state_t do_MainMenu(void);
+static state_t do_ParamMenu(void);
 static state_t do_ParamEdit(void);
-static state_t do_ChainEdit(void);
 
 static state_t transition_A(void);
 static state_t transition_B(void);
 static state_t transition_C(void);
 static state_t transition_D(void);
+static state_t transition_E(void);
+static state_t transition_F(void);
+static state_t transition_G(void);
 
 static void init_mainMenu(void);
-static void init_paramMenu(int index);
+static void init_paramMenu();
+static void refresh_paramMenu();
+
+static int index;
+static effect_t *currentFx;
+static int currentParameterValue;
 
 menu_t mainMenu;
 menu_t paramMenu;
@@ -45,11 +53,11 @@ void state_process(void)
         case kMainMenu:
             currentState = do_MainMenu();
             break;
+        case kParamMenu:
+            currentState = do_ParamMenu();
+            break;
         case kParamEdit:
             currentState = do_ParamEdit();
-            break;
-        case kChainEdit:
-            currentState = do_ChainEdit();
             break;
         default:
             currentState = kHome;
@@ -89,10 +97,12 @@ static state_t do_MainMenu(void)
     
     return kMainMenu;
 }
-static state_t do_ParamEdit(void)
+static state_t do_ParamMenu(void)
 {
     switch(navpanel_getControl()) 
     {
+        case kOK:
+            return transition_E();
         case kRotateCW:
             menu_nextPos(&paramMenu);
             break;
@@ -104,11 +114,35 @@ static state_t do_ParamEdit(void)
         default:
             break;
     }
-    return kParamEdit;
+    return kParamMenu;
 }
-static state_t do_ChainEdit(void)
+
+static state_t do_ParamEdit(void)
 {
-    return kChainEdit;
+    switch(navpanel_getControl()) 
+    {
+        case kOK:
+            // save
+            return transition_F();
+        case kRotateCW:
+            // increment
+            currentParameterValue++;
+            refresh_paramMenu();
+            menu_draw(&paramMenu);
+            break;
+        case kRotateCCW:
+            // decrement
+            currentParameterValue--;
+            refresh_paramMenu();
+            menu_draw(&paramMenu);
+            break;
+        case kBack:
+            // dont save
+            return transition_G();
+        default:
+            break;
+    }
+    return kParamEdit;
 }
 
 static state_t transition_A(void)
@@ -130,11 +164,12 @@ static state_t transition_B(void)
 
 static state_t transition_C(void)
 {
-    int index = mainMenu.SelectedPosition + mainMenu.FirstDisplayedItem;
-    init_paramMenu(index);
+    int i = mainMenu.SelectedPosition + mainMenu.FirstDisplayedItem;
+    currentFx = &fx[i];
+    init_paramMenu(currentFx);
     printf("Transition C \n");
     menu_draw(&paramMenu);
-    return kParamEdit;
+    return kParamMenu;
 }
 
 static state_t transition_D(void)
@@ -142,6 +177,34 @@ static state_t transition_D(void)
     printf("Transition D \n");
     menu_draw(&mainMenu);
     return kMainMenu;
+}
+
+
+
+static state_t transition_E(void)
+{
+    index = paramMenu.SelectedPosition + paramMenu.FirstDisplayedItem;
+    currentParameterValue = currentFx->Parameter[index].Value;
+    printf("Transition E \n");
+    // TODO: do something to differentiate edit mode (flash the selection box or something)
+    //menu_draw(&paramMenu);
+    return kParamEdit;
+}
+
+static state_t transition_F(void)
+{
+    printf("Transition F \n");
+    currentFx->Parameter[index].Value = currentParameterValue;
+    menu_draw(&paramMenu);
+    return kParamMenu;
+}
+
+static state_t transition_G(void)
+{
+    printf("Transition G \n");
+    init_paramMenu();  // TODO: fixme
+    menu_draw(&paramMenu);
+    return kParamMenu;
 }
 
 static void init_mainMenu(void)
@@ -158,20 +221,20 @@ static void init_mainMenu(void)
 }
 
 
-static void init_paramMenu(int index)
+static void init_paramMenu()
 {
     static char temp[MAX_PARAMETERS][30];   // buffer to hold the string we construct and pass to paramMenu item (if this is not static, it gets wiped and we get nonsense printed to display)
     
-    paramMenu.Heading = fx[index].Name;
+    paramMenu.Heading = currentFx->Name;
     
     int i;
     for(i=0; i<MAX_PARAMETERS; i++)  
     {
-        if (fx[index].Parameter[i].Name == NULL)
+        if (currentFx->Parameter[i].Name == NULL)
             paramMenu.Item[i] = NULL;
         else
         {
-            sprintf(temp[i], "%s: %d%s \0", fx[index].Parameter[i].Name, fx[index].Parameter[i].Value, fx[index].Parameter[i].Unit);
+            sprintf(temp[i], "%s: %d%s \0", currentFx->Parameter[i].Name, currentFx->Parameter[i].Value, currentFx->Parameter[i].Unit);
             //paramMenu.Item[i] = malloc(sizeof(char) * 30);
             paramMenu.Item[i] = temp[i];
         }
@@ -179,4 +242,27 @@ static void init_paramMenu(int index)
 
     paramMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
     paramMenu.SelectedPosition = 0;  // always select the top item
+}
+
+static void refresh_paramMenu()
+{
+    static char temp[MAX_PARAMETERS][30];   // buffer to hold the string we construct and pass to paramMenu item (if this is not static, it gets wiped and we get nonsense printed to display)
+    
+    paramMenu.Heading = currentFx->Name;
+    
+    int i;
+    for(i=0; i<MAX_PARAMETERS; i++)  
+    {
+        if (currentFx->Parameter[i].Name == NULL)
+            paramMenu.Item[i] = NULL;
+        else
+        {
+            if (i==index)
+                sprintf(temp[i], "%s: %d%s \0", currentFx->Parameter[i].Name, currentParameterValue, currentFx->Parameter[i].Unit);
+            else
+                sprintf(temp[i], "%s: %d%s \0", currentFx->Parameter[i].Name, currentFx->Parameter[i].Value, currentFx->Parameter[i].Unit);
+            //paramMenu.Item[i] = malloc(sizeof(char) * 30);
+            paramMenu.Item[i] = temp[i];
+        }
+    }
 }
