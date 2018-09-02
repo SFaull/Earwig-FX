@@ -36,6 +36,11 @@ control_t navpanel_getControl(void)
     return action;
 }
 
+void navpanel_setControl(control_t action)
+{
+    pendingAction = action;
+}
+
 void navpanel_process(void)
 {    
     if (timer_expired(navpanel_update_timer, 5))  // run this every 20ms (expected that main loop calls this more regularly))
