@@ -33,6 +33,33 @@ control_t navpanel_getControl(void)
 {
     control_t action = pendingAction;
     pendingAction = kNone;
+    
+#if 0
+    switch(action)
+    {
+        case kRotateCW:
+            printf("Clockwise \n");
+            break;
+        case kRotateCCW:
+            printf("Counter-Clockwise \n");
+            break;
+        case kOK:
+            printf("OK \n");
+            break;
+        case kOKLong:
+            printf("OK Long \n");
+            break;
+        case kBack:
+            printf("Back \n");
+            break;
+        case kBackLong:
+            printf("Back Long \n");
+            break;
+        default:
+            break;
+    }
+#endif
+    
     return action;
 }
 

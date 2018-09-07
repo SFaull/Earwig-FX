@@ -39,44 +39,17 @@ int16_t main(void)
     oled_init(); //initialise SSD1306 OLED display
     navpanel_init();
     effect_init();
-    
+    commands_init();
     //selftest();
     
     __delay_ms(1000);    // leave the splashscreen on for a short period
     printf("Ready \n");
     
-    commands_init();
+    
     while(1)
     {
         heartbeat_process();
         navpanel_process();
         state_process();
-        
-        #if 0
-        // check for button presses and encoder rotations
-        switch(navpanel_getControl())
-        {
-            case kRotateCW:
-                printf("Clockwise \n");
-                break;
-            case kRotateCCW:
-                printf("Counter-Clockwise \n");
-                break;
-            case kOK:
-                printf("OK \n");
-                break;
-            case kOKLong:
-                printf("OK Long \n");
-                break;
-            case kBack:
-                printf("Back \n");
-                break;
-            case kBackLong:
-                printf("Back Long \n");
-                break;
-            default:
-                break;
-        }
-    #endif
     }
 }

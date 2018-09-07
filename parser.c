@@ -62,7 +62,7 @@ void parser_process(char *c)
     int i; 
     bool matched; 
     
-    inChar = *c;
+    inChar = toupper(*c);
     
     if (inChar==term) {     // Check for the terminator (default '\r') meaning end of command
         bufPos=0;           // Reset to start of buffer
