@@ -36,7 +36,7 @@ static void help(void)
 
 static void info(void)
 {
-    printf("%s, %s, %s\n", MODEL_STRING, FW_VERSION_STR, BUILD_DATE);
+    printf("%s, %s, %s %s\n", MODEL_STRING, FW_VERSION_STR, BUILD_DATE, BUILD_TIME);
 }
 
 static void LED_on(void)

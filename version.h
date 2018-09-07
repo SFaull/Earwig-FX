@@ -10,6 +10,7 @@
 /** @brief String representing the device part number */
 #define MODEL_STRING		"Earwig"	
 #define BUILD_DATE          __DATE__
+#define BUILD_TIME          __TIME__
 
 #define STRINGIFY(x)			#x
 #define TOSTRING(x)				STRINGIFY(x)
