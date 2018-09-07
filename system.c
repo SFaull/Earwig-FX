@@ -69,9 +69,3 @@ void ConfigureOscillator(void)
         AD1PCFGL = 0xFFFF; //set all pins digital
 #endif
 }
-
-void LED_init(void)
-{
-        TRISAbits.TRISA10 = 0;   
-        LED = 0;
-}

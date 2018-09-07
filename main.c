@@ -22,8 +22,7 @@
 #include "effect.h"
 #include "parser.h"
 #include "commands.h"
-
-timer_t led_timer;
+#include "heartbeat.h"
 
 int16_t main(void)
 {
@@ -32,7 +31,7 @@ int16_t main(void)
     timer_init();
     //uart1_init();
     uart2_init();
-    LED_init();
+    heartbeat_init();
     //wm8510_init(); //initialise WM8510 port       
     //wm8510_config(); //configure WM8510    
     sram_init(seq); //initialise 23LC1024 in sequential mode
@@ -45,11 +44,11 @@ int16_t main(void)
     
     __delay_ms(1000);    // leave the splashscreen on for a short period
     printf("Ready \n");
-    timer_start(&led_timer);
     
     commands_init();
     while(1)
     {
+        heartbeat_process();
         navpanel_process();
         state_process();
         
@@ -79,13 +78,5 @@ int16_t main(void)
                 break;
         }
     #endif
-        // heartbeat LED
-        /*
-        if(timer_expired(led_timer, 1000))
-        {
-            timer_start(&led_timer);
-            LED = !LED;
-        }		
-         */
     }
 }

@@ -15,7 +15,7 @@
 #define MAXSERIALCOMMANDS	10
 #define MAXDELIMETER 2
 
-
+void parser_printCommandList(void);
 void parser_init();
 char *parser_next();         // returns pointer to next token found in command buffer (for getting arguments to commands)
 void parser_process(char *c);    // Main entry point.  

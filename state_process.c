@@ -345,7 +345,7 @@ static void drawFxChain(void)
             strncpy(shorthand_name, enabled_fx_names[i], 4);
             shorthand_name[4] = 0; // null terminate destination
             int name_width = oled_get_string_width(shorthand_name);
-            printf("NAME: %s", shorthand_name);
+            //printf("NAME: %s", shorthand_name);
             oled_set_coord(x+(w/2)-(name_width/2), pad+(h/2)-7);
             oled_write_string(shorthand_name);
         }   

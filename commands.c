@@ -13,6 +13,7 @@ static void LED_off(void);
 static void remote_control(void);
 static void process_example(void);
 static void reset(void);
+static void help(void);
 static void unrecognized(void);
 
 void commands_init(void)
@@ -21,10 +22,16 @@ void commands_init(void)
     
     parser_addCommand("*IDN?", info);      
     parser_addCommand("*RST", reset);   
+    parser_addCommand("HELP", help);   
     parser_addCommand("LED:ON", LED_on);       // Turns LED on
     parser_addCommand("LED:OFF", LED_off);       // Turns LED on
     parser_addCommand("CONTROL", remote_control);
     parser_addDefaultHandler(unrecognized);  // Handler for command that isn't matched  (says "What?") 
+}
+
+static void help(void)
+{
+    parser_printCommandList();
 }
 
 static void info(void)
@@ -35,13 +42,11 @@ static void info(void)
 static void LED_on(void)
 {
   printf("LED on\n"); 
-  LED = 1;
 }
 
 static void LED_off(void)
 {
   printf("LED off\n"); 
-  LED = 0;
 }
 
 static void remote_control(void)
@@ -50,17 +55,17 @@ static void remote_control(void)
   arg = parser_next(); 
   if (arg != NULL) 
   {
-    if(strcmp("UP",arg) != 0)
+    if(strcmp("DOWN",arg) == 0)
         navpanel_setControl(kRotateCW);
-    else if (strcmp("DOWN",arg) != 0)
+    else if (strcmp("UP",arg) == 0)
         navpanel_setControl(kRotateCCW);
-    else if (strcmp("OK",arg) != 0)
+    else if (strcmp("OK",arg) == 0)
         navpanel_setControl(kOK);
-    else if (strcmp("BACK",arg) != 0)
+    else if (strcmp("BACK",arg) == 0)
         navpanel_setControl(kBack);
-    else if (strcmp("OKHOLD",arg) != 0)
+    else if (strcmp("OKHOLD",arg) == 0)
         navpanel_setControl(kOKLong);
-    else if (strcmp("BACKHOLD",arg) != 0)
+    else if (strcmp("BACKHOLD",arg) == 0)
         navpanel_setControl(kBackLong);
     else
         printf("Error: '%s' is not a valid argument", arg);

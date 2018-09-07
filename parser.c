@@ -20,13 +20,21 @@ typedef struct _callback {
 int numCommand;
 SerialCommandCallback CommandList[MAXSERIALCOMMANDS];   // Actual definition for command/handler array
 void (*defaultHandler)();           // Pointer to the default handler function 
-int usingSoftwareSerial;            // Used as boolean to see if we're using SoftwareSerial object or not
 
 
 
 static char *
 strtok_r (char *s, const char *delim, char **save_ptr);
 static void clearBuffer();
+
+void parser_printCommandList(void)
+{
+    int i;
+    for(i=0; i<MAXSERIALCOMMANDS; i++)
+    {
+        printf("%s\n", CommandList[i].command);
+    }
+}
 
 // Constructor makes sure some things are set. 
 void parser_init()
