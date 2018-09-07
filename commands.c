@@ -1,5 +1,6 @@
 #include <xc.h>
 #include <stdio.h>
+#include <string.h>
 #include "commands.h"
 #include "system.h"
 #include "parser.h"
@@ -9,15 +10,17 @@
 static void info(void);
 static void LED_on(void);
 static void LED_off(void);
-static void remote_control(void)  ;
-static void process_example(void)  ;
+static void remote_control(void);
+static void process_example(void);
+static void reset(void);
 static void unrecognized(void);
 
 void commands_init(void)
 {
     parser_init();
     
-    parser_addCommand("*IDN?", info);       
+    parser_addCommand("*IDN?", info);      
+    parser_addCommand("*RST", reset);   
     parser_addCommand("LED:ON", LED_on);       // Turns LED on
     parser_addCommand("LED:OFF", LED_off);       // Turns LED on
     parser_addCommand("CONTROL", remote_control);
@@ -26,7 +29,7 @@ void commands_init(void)
 
 static void info(void)
 {
-    printf("%s, %s\n", MODEL_STRING, FW_VERSION_STR);
+    printf("%s, %s, %s\n", MODEL_STRING, FW_VERSION_STR, BUILD_DATE);
 }
 
 static void LED_on(void)
@@ -53,7 +56,7 @@ static void remote_control(void)
         navpanel_setControl(kRotateCCW);
     else if (strcmp("OK",arg) != 0)
         navpanel_setControl(kOK);
-    else if (strcmp("BACK") != 0)
+    else if (strcmp("BACK",arg) != 0)
         navpanel_setControl(kBack);
     else if (strcmp("OKHOLD",arg) != 0)
         navpanel_setControl(kOKLong);
@@ -75,6 +78,11 @@ static void process_example(void)
   {
     printf("Arguments received: %s", arg);
   } 
+}
+
+static void reset(void)
+{
+    asm ("RESET");
 }
 
 static void unrecognized(void)
