@@ -9,6 +9,7 @@
 
 #include <xc.h> // include processor files - each processor file is guarded. 
 
+#define CLOCKOUT OC1RS //Clock out to drive codec
 
 #define WM8510_SS LATCbits.LATC7 //SS SPI slave select
 #define software_reset 0

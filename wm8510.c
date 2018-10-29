@@ -23,6 +23,7 @@ void wm8510_init(void)
 {
     // PERIPHERAL PIN SELECT
     __builtin_write_OSCCONL(OSCCON & ~(1<<6));  // Unlock the registers
+    RPO24 = OC2_out; //RP24 (pin 4) = PWM CLOCKOUT
     RPO15 = SDO1_out; // SDO1
     RPO22 = SCK1_out; // SCK1
     TRISCbits.TRISC7 = 0; //RC7 (Pin 16) = output = WM8510_SS (SPI slave select)
@@ -64,6 +65,12 @@ void wm8510_init(void)
     DCICON1bits.DCIEN = 1; //module enabled
     //DCICON1bits.DLOOP = 1; //loopback
     
+    //Initialise output compare module 1 for PWM output (CLOCKOUT)
+    OC1CONbits.OCM = 0; //disable module
+    OC1R = 2; //default duty cycle
+    OC1CONbits.OCTSEL = 0; //Select timer 2 as time base
+    OC1CONbits.OCM = 0b110; //Select output mode PWM
+    
     //Initialise timer 2 - 10Mhz clock out to drive WM8510
     T2CONbits.TON = 0; //Disable timer
     T2CONbits.TCS = 0; //Select internal instruction cycle clock
@@ -75,6 +82,7 @@ void wm8510_init(void)
     IFS0bits.T2IF = 0; //Clear timer 2 interrupt flag
     T2CONbits.TON = 1; //Start timer 2
 
+    CLOCKOUT = 2;
 }
 
 void wm8510_config(void)
@@ -84,7 +92,7 @@ void wm8510_config(void)
     wm8510_write(power_mngmnt1, 79); //mic2 on, bias on, tie off buffer enabled, vmid 5k
     wm8510_write(power_mngmnt2, 17); //Boost on, ADC on
     wm8510_write(power_mngmnt3, 137); //mono out on, mono mixer on, DAC on
-    wm8510_write(input_ctrl, 8); //mic2 = mixer
+    //wm8510_write(input_ctrl, 8); //mic2 = mixer
 
     //PLL setup to generate 8.192MHz clock for 32kHz sample rate
     wm8510_write(pll_n, 9); //PLL n = 9
@@ -96,7 +104,7 @@ void wm8510_config(void)
 
     wm8510_write(audio_interface, 208); //frame clock inverted, word length 24bits, I2S format
     wm8510_write(adc_boost_ctrl, 5); //input boost 0dB
-    // WM8510_write(companding_ctrl, 1); //Loopback
+    //wm8510_write(companding_ctrl, 1); //Loopback
     wm8510_write(dac_control, 24); //32kHz de-emphasis, 128x DAC oversample
     wm8510_write(adc_control, 264); //hipass on (removes any audio DC offset), 128x ADC oversample
     wm8510_write(additional_ctrl, 2); //32KHz sample rate
