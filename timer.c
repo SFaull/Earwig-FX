@@ -48,8 +48,5 @@ void timer_start(timer_t *startTime)
    returns true if timer has expired */
 bool timer_expired(timer_t startTime, timer_t expiryTime)
 {
-  if ( (runTime - startTime) >= expiryTime )
-    return true;
-  else
-    return false;
+  return ( (runTime - startTime) >= expiryTime );
 }
