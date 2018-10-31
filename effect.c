@@ -30,6 +30,7 @@ void effect_init(void)
     fx[0].Parameter[1].Min = 1;
     fx[0].Parameter[1].Max = 100;
     fx[0].Enabled = false;
+    fx[0].Func = delay; // function pointer to delay function
     
 
     fx[1].Name = "Distortion";
@@ -44,6 +45,7 @@ void effect_init(void)
     fx[1].Parameter[1].Min = 0;
     fx[1].Parameter[1].Max = 100;
     fx[1].Enabled = false;
+    fx[1].Func = distortion;
     
     fx[2].Name = "Tremolo";
     fx[2].Parameter[0].Name = "Frequency";
@@ -52,6 +54,7 @@ void effect_init(void)
     fx[2].Parameter[0].Min = 1;
     fx[2].Parameter[0].Max = 20;
     fx[2].Enabled = true;
+    fx[2].Func = tremolo;
     
     fx[3].Name = "Chorus";
     fx[3].Parameter[0].Name = "Frequency";
@@ -60,6 +63,7 @@ void effect_init(void)
     fx[3].Parameter[0].Min = 1;
     fx[3].Parameter[0].Max = 20;
     fx[3].Enabled = false;
+    fx[3].Func = chorus;
      
     
     setDefaults();

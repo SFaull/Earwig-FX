@@ -17,6 +17,8 @@
 #include <stdint.h> 
 #include <stdbool.h>
 
+typedef unsigned int (*Operation)(unsigned int sample);
+
 typedef struct{
     char *Name;
     char *Unit;
@@ -29,6 +31,7 @@ typedef struct{
     char *Name;
     param_t Parameter[MAX_PARAMETERS];
     bool Enabled;
+    Operation Func; // function pointer
 } effect_t;
 
 

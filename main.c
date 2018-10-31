@@ -56,9 +56,12 @@ int16_t main(void)
        
        if (sample_ready)
        {
-           //sample = delay(sample);
-           sample = chorus(sample);
-           sample_ready = false;
+            int i;
+            for(i=0; i<FX_COUNT; i++)
+                 if(fx[i].Enabled)
+                     sample = fx[i].Func(sample);
+            
+            sample_ready = false;
        }
     }
 }
