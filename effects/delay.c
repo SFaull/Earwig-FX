@@ -1,9 +1,12 @@
+#include <stdio.h>
+#include <string.h>
 #include "delay.h"
 #include "../sram.h"
 #include "volume.h"
 
-int delayVol = 12;       // default volume for delay decay (8/16 -> 50%)
-int delayTime = 741;          // delay time in
+
+static int delayVol;
+static int delayTime;
 
 // SRAM address pointers
 static unsigned long write_address = 0;
@@ -22,17 +25,25 @@ void delay_set_decay(int decay)
     delayVol = decay;
 }
 
-void delay_set_delay_time(int percentage)
+// set the delay time in ms
+void delay_set_delay_time(int milliseconds)
 {
-    // TODO define these magic numbers and optimise
+    // TODO wipe the RAM contents
+    unsigned long delaySize = 2*milliseconds/(1000.0/Fs);
     
-    unsigned long tmp = (AVAILABLE_MEMORY/2) * (percentage/100.0);
-    unsigned long delaySize = tmp*2;   // double the result since we store each sample as 2 bytes
-        
-    delayTime = 1482*(1-(percentage*0.01)); // save time (in seconds) to be displayed on lcd
+    // ensure we dont exceed the maximum delay time our memory allows
+    if (delaySize > AVAILABLE_MEMORY - 2)
+        delaySize = AVAILABLE_MEMORY - 2;
     
     read_address = 0;                          // reset write address
-    write_address = read_address + delaySize;   // set read according to delay time
+    write_address = delaySize;   // set read according to delay time
+    
+    // recalculate the delay time now that its actually been implemeted as a number of memory locations
+    delayTime = (1000.0/Fs)*((write_address-read_address)/2);
+    if(delayTime < 0)
+        delayTime *= -1;
+    
+    printf("Delay: %dms\n", delayTime);
 }
 
 signed int delay(signed int delay_in)
@@ -46,8 +57,6 @@ signed int delay(signed int delay_in)
 
     if (write_address >= AVAILABLE_MEMORY)  // Check if max memory location has been reached
         write_address = 0;      // wrap around
-    
-    
 
     delay_out = sram_read(read_address);   // Read delayed sample from memory
     read_address = read_address + 2;       // increment address pointer
@@ -57,8 +66,6 @@ signed int delay(signed int delay_in)
     
     sram_write(write_address, delay_out);   // write the new combined sample to memory
     write_address = write_address + 2;      // increment address pointer
-    
-    //printf("R: %d,\t W: %d\n", read_address, write_address);
     
     return delay_out;
 }

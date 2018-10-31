@@ -42,7 +42,7 @@ int16_t main(void)
     navpanel_init();
     effect_init();
     commands_init();
-    selftest();
+    //selftest();
     
     __delay_ms(1000);    // leave the splashscreen on for a short period
     printf("Ready \n");

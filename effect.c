@@ -76,10 +76,10 @@ void setDefaults(void)
     distortion_set_symetric(true);
     tremolo_set_period(50);
     chorus_set_period(50);
-    delay_set_delay_time(10);
+    delay_set_delay_time(400);
     
     // TODO: this function sets to a discrete level - 0-16... could this be more intuitive?
-    delay_set_decay(14);
+    delay_set_decay(4);
     
     sample = 0;
     sample_ready = false;
