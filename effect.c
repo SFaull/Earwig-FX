@@ -53,7 +53,7 @@ void effect_init(void)
     fx[2].Parameter[0].Value = 4;
     fx[2].Parameter[0].Min = 1;
     fx[2].Parameter[0].Max = 20;
-    fx[2].Enabled = true;
+    fx[2].Enabled = false;
     fx[2].Func = tremolo;
     
     fx[3].Name = "Chorus";
@@ -76,10 +76,10 @@ void setDefaults(void)
     distortion_set_symetric(true);
     tremolo_set_period(50);
     chorus_set_period(50);
-    delay_set_delay_time(5);
+    delay_set_delay_time(10);
     
     // TODO: this function sets to a discrete level - 0-16... could this be more intuitive?
-    delay_set_decay(8);
+    delay_set_decay(14);
     
     sample = 0;
     sample_ready = false;
