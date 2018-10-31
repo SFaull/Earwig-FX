@@ -12,6 +12,7 @@
 /* Microcontroller MIPs (FCY) */
 #define SYS_FREQ        79227500L      // Clock-frequecy in Hz -> Fin*(M/(N1*N2)) = 7.37*(43/(2*2)) = 79227500 
 #define FCY             SYS_FREQ/2
+#define Fs              32000   // sample frequency
 
 //Selectable input sources
 #define INT1_in RPINR0bits.INT1R

@@ -23,7 +23,7 @@ bool selftest()
     bool success = true;
     
     //success = selftest_eeprom();
-    //success &= selftest_sram();
+    success = selftest_sram();
     //selftest_oled();
     
     selftest_sram();

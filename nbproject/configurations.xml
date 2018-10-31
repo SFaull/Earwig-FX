@@ -4,6 +4,14 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="effects" displayName="effects" projectFiles="true">
+        <itemPath>effects/chorus.h</itemPath>
+        <itemPath>effects/delay.h</itemPath>
+        <itemPath>effects/distortion.h</itemPath>
+        <itemPath>effects/filter.h</itemPath>
+        <itemPath>effects/tremolo.h</itemPath>
+        <itemPath>effects/volume.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f1" displayName="fonts" projectFiles="true">
         <itemPath>fonts/Callibri15.h</itemPath>
       </logicalFolder>
@@ -34,6 +42,14 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="effects" displayName="effects" projectFiles="true">
+        <itemPath>effects/chorus.c</itemPath>
+        <itemPath>effects/delay.c</itemPath>
+        <itemPath>effects/distortion.c</itemPath>
+        <itemPath>effects/filter.c</itemPath>
+        <itemPath>effects/tremolo.c</itemPath>
+        <itemPath>effects/volume.c</itemPath>
+      </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>system.c</itemPath>
       <itemPath>configuration_bits.c</itemPath>
@@ -66,6 +82,7 @@
   <sourceRootList>
     <Elem>.</Elem>
     <Elem>fonts</Elem>
+    <Elem>effects</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

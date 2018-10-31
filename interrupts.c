@@ -10,6 +10,13 @@
 #include "timer.h"
 #include "system.h"
 #include "parser.h"
+#include "effect.h"
+#include "effects/delay.h"
+#include "effects/distortion.h"
+#include "effects/chorus.h"
+#include "effects/filter.h"
+#include "effects/tremolo.h"
+#include "effects/volume.h"
 
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */
@@ -152,13 +159,17 @@ void __attribute__((interrupt, no_auto_psv)) _U2RXInterrupt(void)
     }
 } 
 
+//extern signed int sample;
+//extern bool sample_ready;
+
 //DCI ISR
 void __attribute__((interrupt, no_auto_psv)) _DCIInterrupt(void) 
 {
+    sample_ready = true;
     // in theory this should achieve simple loopback
     static int dummy = 0;
     static long adc = 0;
-    static int sample = 0;
+    //static int sample = 0;
 
     IFS3bits.DCIIF = 0; //clear DCI interrupt
 
@@ -175,8 +186,11 @@ void __attribute__((interrupt, no_auto_psv)) _DCIInterrupt(void)
     adc = (adc + 32768) >> 16;
     if (adc > 32767)
         adc = 32767;
-
+    
+    
     sample = adc;
+    //sample = delay(adc);
+    //sample = chorus(sample);
 }
 
 // Run when Timer1 interrupt is triggered

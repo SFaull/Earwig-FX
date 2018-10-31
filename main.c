@@ -24,23 +24,25 @@
 #include "commands.h"
 #include "heartbeat.h"
 
+#include "effects/chorus.h"
+
 int16_t main(void)
 {
     /* Configure the oscillator for the device */
     ConfigureOscillator();
     timer_init();
-    //uart1_init();
+    uart1_init();
     uart2_init();
     heartbeat_init();
-    //wm8510_init(); //initialise WM8510 port       
-    //wm8510_config(); //configure WM8510    
+    wm8510_init(); //initialise WM8510 port       
+    wm8510_config(); //configure WM8510    
     sram_init(seq); //initialise 23LC1024 in sequential mode
     InitI2C1(); //initialise i2c peripheral
     oled_init(); //initialise SSD1306 OLED display
     navpanel_init();
     effect_init();
     commands_init();
-    //selftest();
+    selftest();
     
     __delay_ms(1000);    // leave the splashscreen on for a short period
     printf("Ready \n");
@@ -48,8 +50,15 @@ int16_t main(void)
     
     while(1)
     {
-        heartbeat_process();
-        navpanel_process();
-        state_process();
+       heartbeat_process();
+       navpanel_process();
+       state_process();
+       
+       if (sample_ready)
+       {
+           //sample = delay(sample);
+           sample = chorus(sample);
+           sample_ready = false;
+       }
     }
 }

@@ -31,9 +31,14 @@ typedef struct{
     bool Enabled;
 } effect_t;
 
+
+
 void effect_init(void);
+void setDefaults(void);
 effect_t *effect_get_by_index(int i);
 
 extern effect_t fx[FX_COUNT];
+extern signed int sample;
+extern bool sample_ready;
 
 #endif	/* EFFECT_H */
