@@ -37,7 +37,7 @@ static void decValue(void);
 static void drawFxChain(void);
 
 static int index;
-static effect_t *currentFx;
+static effectInfo_t *currentFx;
 static int currentParameterValue;
 
 menu_t mainMenu;
@@ -194,6 +194,7 @@ static state_t transition_F(void)
     printf("Transition F \n");
     currentFx->Parameter[index].Value = currentParameterValue;
     menu_draw(&paramMenu);
+    effect_updateParams();
     return kParamMenu;
 }
 
@@ -207,12 +208,12 @@ static state_t transition_G(void)
 
 static void init_mainMenu(void)
 {
-    static char temp[FX_COUNT][25];
+    static char temp[kEffectCount][25];
     
     int i;
     // setup main menu
     mainMenu.Heading = "Main Menu";
-    for(i=0; i<FX_COUNT; i++)
+    for(i=0; i<kEffectCount; i++)
     {
         if (fx[i].Enabled)
             sprintf(temp[i], "[x] %s", fx[i].Name);
@@ -228,12 +229,12 @@ static void init_mainMenu(void)
 
 static void refresh_mainMenu(void)
 {
-    static char temp[FX_COUNT][25];
+    static char temp[kEffectCount][25];
     
     int i;
     // setup main menu
     mainMenu.Heading = "Main Menu";
-    for(i=0; i<FX_COUNT; i++)
+    for(i=0; i<kEffectCount; i++)
     {
         if (fx[i].Enabled)
             sprintf(temp[i], "[x] %s", fx[i].Name);
@@ -314,10 +315,10 @@ static void decValue(void)
 static void drawFxChain(void)
 {
     int count = 0;
-    char *enabled_fx_names[FX_COUNT];
+    char *enabled_fx_names[kEffectCount];
     
     int i;
-    for(i=0; i<FX_COUNT; i++)
+    for(i=0; i<kEffectCount; i++)
     {
         if(fx[i].Enabled)
         {

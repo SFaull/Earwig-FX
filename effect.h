@@ -9,7 +9,7 @@
 #ifndef EFFECT_H
 #define	EFFECT_H
 
-#define FX_COUNT 4
+//#define FX_COUNT 4
 #define MAX_PARAMETERS 3
 
 #include <stdio.h>
@@ -32,15 +32,22 @@ typedef struct{
     param_t Parameter[MAX_PARAMETERS];
     bool Enabled;
     Operation Func; // function pointer
+} effectInfo_t;
+
+typedef enum {
+    kDistortion = 0,
+    kTremolo = 1,
+    kDelay = 2,
+    kChorus = 3,
+    kEffectCount = 4
 } effect_t;
 
-
-
 void effect_init(void);
-void setDefaults(void);
-effect_t *effect_get_by_index(int i);
+void effect_updateParams();
+effectInfo_t *effect_get_by_index(int i);
 
-extern effect_t fx[FX_COUNT];
+
+extern effectInfo_t fx[kEffectCount];
 extern signed int sample;
 extern bool sample_ready;
 

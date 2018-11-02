@@ -72,6 +72,18 @@ void sram_fill(unsigned char sramdata)
         temp = spi_command(sramdata);
 
     SRAM0_SS = 1;                          // Disable SRAM
+    
+    SRAM1_SS = 0;                    // Enable SRAM
+
+    temp = spi_command(WRITE);      // Send WRITE command, to be followed by 24-bit address
+
+    for (a=0; a<3; a++)             // send 24 bit address in 3 bytes
+        temp = spi_command(0);
+    
+    for (a=0; a<SRAM_SIZE; a++)            // write byte to entire of memory
+        temp = spi_command(sramdata);
+
+    SRAM1_SS = 1;                          // Disable SRAM
 }
 
 void sram_init(unsigned char sram_mode)

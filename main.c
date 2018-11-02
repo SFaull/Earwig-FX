@@ -57,7 +57,7 @@ int16_t main(void)
        if (sample_ready)
        {
             int i;
-            for(i=0; i<FX_COUNT; i++)
+            for(i=0; i<kEffectCount; i++)
                  if(fx[i].Enabled)
                      sample = fx[i].Func(sample);
             

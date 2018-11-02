@@ -70,7 +70,7 @@ void navpanel_setControl(control_t action)
 
 void navpanel_process(void)
 {    
-    if (timer_expired(navpanel_update_timer, 5))  // run this every 20ms (expected that main loop calls this more regularly))
+    if (timer_expired(navpanel_update_timer, 5))  // run this every xms (expected that main loop calls this more regularly))
     {
         timer_start(&navpanel_update_timer);    // restart the timer
         

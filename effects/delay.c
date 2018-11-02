@@ -28,7 +28,8 @@ void delay_set_decay(int decay)
 // set the delay time in ms
 void delay_set_delay_time(int milliseconds)
 {
-    // TODO wipe the RAM contents
+    sram_fill(0); // wipe the RAM contents
+    
     unsigned long delaySize = 2*milliseconds/(1000.0/Fs);
     
     // ensure we dont exceed the maximum delay time our memory allows
