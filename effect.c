@@ -92,8 +92,8 @@ void effect_updateParams()
     // TODO: this function sets to a discrete level - 0-16... could this be more intuitive?
     delay_set_decay((int)(fx[kDelay].Parameter[1].Value * 16 * 0.01));
     delay_set_delay_time(fx[kDelay].Parameter[0].Value);
-    //distortion_set_percentage(fx[kDistortion].Parameter[1].Value);
-    //distortion_set_symetric(fx[kDistortion].Parameter[0].Value);
+    distortion_set_percentage(fx[kDistortion].Parameter[1].Value);
+    distortion_set_symetric(fx[kDistortion].Parameter[0].Value);
     
     //tremolo_set_period(50);
     //chorus_set_period(50);
