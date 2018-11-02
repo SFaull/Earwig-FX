@@ -14,6 +14,7 @@ void chorus_set_period(int percentage)
         chorusPeriod = (Fs/340) * (1 + (0.01*percentage)); // set chorus speed using period
         //TODO - sort out below and explain magic numbers
         chorusFreq = 2*(1 + (0.01*percentage)); // save speed to be displayed on lcd
+        printf("Chorus Freq: %d\n", chorusFreq);
         // equation gives a speed of between 2 and 4 seconds
 }
 

@@ -11,6 +11,7 @@
         <itemPath>effects/filter.h</itemPath>
         <itemPath>effects/tremolo.h</itemPath>
         <itemPath>effects/volume.h</itemPath>
+        <itemPath>effects/bitcrusher.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="fonts" projectFiles="true">
         <itemPath>fonts/Callibri15.h</itemPath>
@@ -49,6 +50,7 @@
         <itemPath>effects/filter.c</itemPath>
         <itemPath>effects/tremolo.c</itemPath>
         <itemPath>effects/volume.c</itemPath>
+        <itemPath>effects/bitcrusher.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>system.c</itemPath>

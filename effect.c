@@ -9,6 +9,7 @@
 #include "effects/chorus.h"
 #include "effects/distortion.h"
 #include "effects/tremolo.h"
+#include "effects/bitcrusher.h"
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -23,7 +24,7 @@ void effect_init(void)
     fx[kDelay].Name = "Delay";
     fx[kDelay].Parameter[0].Name = "Delay Time";
     fx[kDelay].Parameter[0].Unit = "ms";
-    fx[kDelay].Parameter[0].Value = 1000;
+    fx[kDelay].Parameter[0].Value = 200;
     fx[kDelay].Parameter[0].Min = 100;
     fx[kDelay].Parameter[0].Max = 3000;
     fx[kDelay].Parameter[1].Name = "Feedback";
@@ -66,6 +67,20 @@ void effect_init(void)
     fx[kChorus].Parameter[0].Max = 20;
     fx[kChorus].Enabled = false;
     fx[kChorus].Func = chorus;
+    
+    fx[kBitcrusher].Name = "Bitcrusher";
+    fx[kBitcrusher].Parameter[0].Name = "Bitdepth";
+    fx[kBitcrusher].Parameter[0].Unit = "";
+    fx[kBitcrusher].Parameter[0].Value = 16;
+    fx[kBitcrusher].Parameter[0].Min = 1;
+    fx[kBitcrusher].Parameter[0].Max = 16;
+    fx[kBitcrusher].Parameter[1].Name = "Fs Divisor";
+    fx[kBitcrusher].Parameter[1].Unit = "x";
+    fx[kBitcrusher].Parameter[1].Value = 1;
+    fx[kBitcrusher].Parameter[1].Min = 1;
+    fx[kBitcrusher].Parameter[1].Max = 50;
+    fx[kBitcrusher].Enabled = false;
+    fx[kBitcrusher].Func = bitcrusher;
      
     setDefaults();
     effect_updateParams();
@@ -73,15 +88,8 @@ void effect_init(void)
 
 void setDefaults(void)
 {
-    // TODO: All of these functions accept a percentage as the argument - they should be renamed to make this obvious
-    distortion_set_percentage(90);
-    distortion_set_symetric(true);
     tremolo_set_period(50);
     chorus_set_period(50);
-    delay_set_delay_time(400);
-    
-    // TODO: this function sets to a discrete level - 0-16... could this be more intuitive?
-    delay_set_decay(4);
     
     sample = 0;
     sample_ready = false;
@@ -94,9 +102,6 @@ void effect_updateParams()
     delay_set_delay_time(fx[kDelay].Parameter[0].Value);
     distortion_set_percentage(fx[kDistortion].Parameter[1].Value);
     distortion_set_symetric(fx[kDistortion].Parameter[0].Value);
-    
-    //tremolo_set_period(50);
-    //chorus_set_period(50);
-    
-    
+    bitcrusher_setBitdepth(fx[kBitcrusher].Parameter[0].Value);
+     bitcrusher_setSampleDivisor(fx[kBitcrusher].Parameter[1].Value);
 }
