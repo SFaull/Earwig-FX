@@ -50,3 +50,8 @@ bool timer_expired(timer_t startTime, timer_t expiryTime)
 {
   return ( (runTime - startTime) >= expiryTime );
 }
+
+timer_t timer_elapsed(timer_t startTime)
+{
+    return (runTime - startTime);
+}

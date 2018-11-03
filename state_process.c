@@ -294,22 +294,20 @@ static void refresh_paramMenu()
 
 static void incValue(void)
 {
-    if (currentParameterValue < currentFx->Parameter[index].Max)
-    {
-        currentParameterValue++;
-        refresh_paramMenu();
-        menu_draw(&paramMenu);
-    }
+    currentParameterValue+=navpanel_getEncoderSteps();
+    if (currentParameterValue > currentFx->Parameter[index].Max)
+        currentParameterValue = currentFx->Parameter[index].Max;
+    refresh_paramMenu();
+    menu_draw(&paramMenu);
 }
 
 static void decValue(void)
 {
-    if (currentParameterValue > currentFx->Parameter[index].Min)
-    {
-        currentParameterValue--;
-        refresh_paramMenu();
-        menu_draw(&paramMenu);
-    }
+    currentParameterValue-=navpanel_getEncoderSteps();
+    if(currentParameterValue < currentFx->Parameter[index].Min)
+        currentParameterValue = currentFx->Parameter[index].Min;
+    refresh_paramMenu();
+    menu_draw(&paramMenu);
 }
 
 static void drawFxChain(void)

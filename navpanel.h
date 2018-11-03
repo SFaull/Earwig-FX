@@ -29,6 +29,7 @@ typedef enum {
 } control_t;
 
 void navpanel_init(void);
+int navpanel_getEncoderSteps(void);
 void navpanel_setControl(control_t action);
 control_t navpanel_getControl(void);
 void navpanel_process(void);

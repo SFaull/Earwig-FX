@@ -7,15 +7,19 @@
 #include "system.h"
 #include "navpanel.h"
 #include "timer.h"
+#include <math.h>
 #include <stdbool.h>
 
 static void encoder_process(void);
 static void button_process(void);
+static void calculate_encoder_speed(void);
 
 static control_t pendingAction;
 static timer_t navpanel_update_timer;
 static timer_t navpanel_long_press_timer1;
 static timer_t navpanel_long_press_timer2;
+static timer_t encoder_interval;
+static float navpanel_encoder_speed; // steps per second
 
 void navpanel_init(void)
 {    
@@ -27,6 +31,20 @@ void navpanel_init(void)
     pendingAction = kNone;
     
     timer_start(&navpanel_update_timer);
+    timer_start(&encoder_interval);
+}
+
+int navpanel_getEncoderSteps(void)
+{
+    int step;
+    
+    if (navpanel_encoder_speed < 2.0)
+        step = 1;
+    else if (navpanel_encoder_speed < 8.0)
+        step = (int)pow(2,navpanel_encoder_speed/4);
+    else
+        step = (int)pow(2,navpanel_encoder_speed/2);
+    return step;
 }
 
 control_t navpanel_getControl(void)
@@ -96,9 +114,15 @@ static void encoder_process(void)
         store <<= 4;
         store |= prevNextCode;
         if ((store&0xff)==0x2b) 
+        {
             pendingAction = kRotateCW; 
+            calculate_encoder_speed();
+        }
         if ((store&0xff)==0x17) 
+        {
             pendingAction = kRotateCCW; 
+            calculate_encoder_speed();
+        }
      }
 }
 
@@ -154,4 +178,14 @@ static void button_process(void)
         pendingAction = kBack;
         back_pressed = false;
     }
+}
+
+void calculate_encoder_speed(void)
+{
+    unsigned long elapsed = timer_elapsed(encoder_interval);
+    navpanel_encoder_speed = 1.0/(elapsed/1000.0);
+    timer_start(&encoder_interval);
+    
+    //printf("Time since last step: %lu \n", elapsed);
+    printf("%f sps\n", navpanel_encoder_speed);
 }

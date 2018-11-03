@@ -18,6 +18,7 @@ void timer_init(void);
 void timer_tick(void);
 void timer_start(timer_t *startTime);
 bool timer_expired(timer_t startTime, timer_t expiryTime);
+timer_t timer_elapsed(timer_t startTime);
 
 #endif	/* TIMER_H */
 
