@@ -60,11 +60,11 @@ void effect_init(void)
     fx[kTremolo].Func = tremolo;
     
     fx[kChorus].Name = "Chorus";
-    fx[kChorus].Parameter[0].Name = "Frequency";
-    fx[kChorus].Parameter[0].Unit = "Hz";
-    fx[kChorus].Parameter[0].Value = 2;
-    fx[kChorus].Parameter[0].Min = 1;
-    fx[kChorus].Parameter[0].Max = 20;
+    fx[kChorus].Parameter[0].Name = "Period";
+    fx[kChorus].Parameter[0].Unit = "ms";
+    fx[kChorus].Parameter[0].Value = 2000;
+    fx[kChorus].Parameter[0].Min = 200;
+    fx[kChorus].Parameter[0].Max = 5000;
     fx[kChorus].Enabled = false;
     fx[kChorus].Func = chorus;
     
@@ -89,7 +89,7 @@ void effect_init(void)
 void setDefaults(void)
 {
     tremolo_set_period(50);
-    chorus_set_period(50);
+    //chorus_set_period(50);
     
     sample = 0;
     sample_ready = false;
@@ -104,4 +104,5 @@ void effect_updateParams()
     distortion_set_symetric(fx[kDistortion].Parameter[0].Value);
     bitcrusher_setBitdepth(fx[kBitcrusher].Parameter[0].Value);
      bitcrusher_setSampleDivisor(fx[kBitcrusher].Parameter[1].Value);
+     chorus_set_period(fx[kChorus].Parameter[0].Value);
 }

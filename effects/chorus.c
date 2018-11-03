@@ -3,26 +3,38 @@
 #include <stdbool.h>
 #include <math.h> 
 
+#define CHORUS_BUF_SIZE 340
+
 int chorusPeriod = 195; // chorus period used to determine the frequency (default value)
 float chorusFreq;
 
 int chorus_get_period(void) { return chorusPeriod; }
 float chorus_get_freq(void) { return chorusFreq; }
 
-void chorus_set_period(int percentage) 
+void chorus_set_period(int period) 
+{     
+    float timePeriod = period/1000.0;
+    float a = timePeriod*Fs;
+    int b = 2*CHORUS_BUF_SIZE;
+    chorusPeriod = (int)(a/(float)b);
+
+    //printf("Chorus Period:,%d, %lu, %d, %d\n",chorusPeriod);
+}
+
+void chorus_set_freq(int freq) 
 { 
-        chorusPeriod = (Fs/340) * (1 + (0.01*percentage)); // set chorus speed using period
-        //TODO - sort out below and explain magic numbers
-        chorusFreq = 2*(1 + (0.01*percentage)); // save speed to be displayed on lcd
-        printf("Chorus Freq: %d\n", chorusFreq);
-        // equation gives a speed of between 2 and 4 seconds
+    //chorusPeriod = (int)(freq*Fs)/(int)(2*CHORUS_BUF_SIZE);
+    float timePeriod = 1/(float)freq;
+    float a = timePeriod*Fs;
+    int b = 2*CHORUS_BUF_SIZE;
+    chorusPeriod = (int)(a/(float)b);
+
+    printf("Chorus Freq: %dHz,%d, %lu, %d, %d\n", freq, Fs, a, b, chorusPeriod);
 }
 
 signed int chorus(signed int chorus_in)
 {
-    #define SIZE 340   // Short sample buffer
-
-    static signed int buf[SIZE];
+    static signed int buf[CHORUS_BUF_SIZE];
     static int write;
     static int read;
     static int delay_len;
@@ -31,18 +43,18 @@ signed int chorus(signed int chorus_in)
     
     signed int sample_out;  
     
-    chorus_in = chorus_in >> 1; // halve the sample amplitude to avoid clipping
+    //chorus_in = chorus_in >> 1; // halve the sample amplitude to avoid clipping
 
     read = write - delay_len;   // set read address according to current delay time
 
     buf[write] = chorus_in;    // store the current sample 
-    if (write > SIZE-1)     // if the final memory location is reached...
+    if (write > CHORUS_BUF_SIZE-1)     // if the final memory location is reached...
         write = 0;          // wrap around
     else
         write++;            // otherwise increment the write pointer
 
     if (read < 0)   // sometimes the read pointer will be negative, if this is the case
-        read = read + SIZE; // add the buffer length to the read pointer to get the correct memory location
+        read = read + CHORUS_BUF_SIZE; // add the buffer length to the read pointer to get the correct memory location
 
     sample_out = buf[read];    // retrieve the sample and half the amplitude
     read++;                         // increment the read pointer
@@ -64,7 +76,7 @@ signed int chorus(signed int chorus_in)
 
     LFO++;  // Increment the LFO counter (this is incremented at the sample rate)
 
-    if (delay_len >= SIZE-1)    // if the delay length reaches the buffer length
+    if (delay_len >= CHORUS_BUF_SIZE-1)    // if the delay length reaches the buffer length
         delay_dir = 1;          // set the delay length to begin decreasing
     if (delay_len <= 1)         // if the delay length reaches a very small value 
         delay_dir = 0;          // set the delay length to begin increasing 

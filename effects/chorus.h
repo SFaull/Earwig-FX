@@ -37,6 +37,7 @@ signed int chorus(signed int chorus_in);
 float chorus_get_freq(void);
 int chorus_get_period(void);
 void chorus_set_period(int percentage);
+void chorus_set_freq(int freq);
 signed int test(signed int sample);
 
 #ifdef	__cplusplus

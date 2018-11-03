@@ -51,7 +51,7 @@ signed int delay(signed int delay_in)
 {
     signed int delay_out;
     
-    delay_in = delay_in >> 1;   // attenuate sample to avoid clipping
+    //delay_in = delay_in >> 1;   // attenuate sample to avoid clipping
         
     if (read_address >= AVAILABLE_MEMORY)   // Check if max memory location has been reached
         read_address = 0;       // wrap around
