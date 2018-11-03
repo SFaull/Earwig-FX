@@ -210,8 +210,10 @@ void calculate_encoder_speed(void)
 {
     unsigned long elapsed = timer_elapsed(encoder_interval);
     navpanel_encoder_speed = 1.0/(elapsed/1000.0);
+    if (navpanel_encoder_speed <= 0) navpanel_encoder_speed = 1;
+    
     timer_start(&encoder_interval);
     
     //printf("Time since last step: %lu \n", elapsed);
-    //printf("%d sps\n", navpanel_encoder_speed);
+    printf("%d sps\n", navpanel_encoder_speed);
 }

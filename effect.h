@@ -40,7 +40,8 @@ typedef enum {
     kDelay = 2,
     kChorus = 3,
     kBitcrusher = 4,
-    kEffectCount = 5
+    kPitchshift = 5,
+    kEffectCount = 6
 } effect_t;
 
 void effect_init(void);

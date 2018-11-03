@@ -10,6 +10,7 @@
 #include "effects/distortion.h"
 #include "effects/tremolo.h"
 #include "effects/bitcrusher.h"
+#include "effects/pitchshift.h"
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -79,6 +80,20 @@ void effect_init(void)
     fx[kBitcrusher].Parameter[1].Max = 50;
     fx[kBitcrusher].Enabled = false;
     fx[kBitcrusher].Func = bitcrusher;
+    
+    fx[kPitchshift].Name = "Pitch Shift";
+    fx[kPitchshift].Parameter[0].Name = "Octave";
+    fx[kPitchshift].Parameter[0].Unit = "";
+    fx[kPitchshift].Parameter[0].Value = 0;
+    fx[kPitchshift].Parameter[0].Min = -1;
+    fx[kPitchshift].Parameter[0].Max = 1;
+    fx[kPitchshift].Parameter[1].Name = "Detune";
+    fx[kPitchshift].Parameter[1].Unit = "";
+    fx[kPitchshift].Parameter[1].Value = 0;
+    fx[kPitchshift].Parameter[1].Min = -1000;
+    fx[kPitchshift].Parameter[1].Max = 1000;
+    fx[kPitchshift].Enabled = false;
+    fx[kPitchshift].Func = pitchshift;
      
     sample = 0;
     sample_ready = false;
@@ -97,4 +112,6 @@ void effect_updateParams()
     bitcrusher_setSampleDivisor(fx[kBitcrusher].Parameter[1].Value);
     chorus_set_period(fx[kChorus].Parameter[0].Value);
     tremolo_set_period(fx[kTremolo].Parameter[0].Value);
+    bitcrusher_setOctave(fx[kPitchshift].Parameter[0].Value);
+    bitcrusher_setDetune(fx[kPitchshift].Parameter[1].Value);
 }
