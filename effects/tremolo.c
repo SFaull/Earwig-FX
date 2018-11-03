@@ -10,13 +10,26 @@ float tremFreq;
 int tremolo_get_period(void) { return tremPeriod; }
 float tremolo_get_freq(void) { return tremFreq; }
 
+
+void tremolo_set_period(int period) 
+{ 
+    float timePeriod = period/1000.0;
+    float a = timePeriod*Fs;
+    int b = (2*16)-1;
+    tremPeriod = (int)(a/(float)b);
+    printf("Trem samples %d \n", tremPeriod);
+}
+
+/*
 void tremolo_set_period(int percentage) 
 { 
+    
     int maxFreq = 10;
     tremFreq = ((float)percentage * 0.01f * (float)maxFreq);    // received is a percentage so scale accordingly (max 15Hz)
     tremPeriod = (Fs/(tremFreq*31))-1;
+    
 }
-
+*/
 signed int tremolo(signed int trem_in)
 {
     static int LFO = 0;

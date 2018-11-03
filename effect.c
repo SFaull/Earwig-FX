@@ -13,8 +13,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-static void setDefaults(void);
-
 effectInfo_t fx[kEffectCount];
 signed int sample;
 bool sample_ready;
@@ -51,11 +49,11 @@ void effect_init(void)
     fx[kDistortion].Func = distortion;
     
     fx[kTremolo].Name = "Tremolo";
-    fx[kTremolo].Parameter[0].Name = "Frequency";
-    fx[kTremolo].Parameter[0].Unit = "Hz";
-    fx[kTremolo].Parameter[0].Value = 4;
-    fx[kTremolo].Parameter[0].Min = 1;
-    fx[kTremolo].Parameter[0].Max = 20;
+    fx[kTremolo].Parameter[0].Name = "Period";
+    fx[kTremolo].Parameter[0].Unit = "ms";
+    fx[kTremolo].Parameter[0].Value = 200;
+    fx[kTremolo].Parameter[0].Min = 100;
+    fx[kTremolo].Parameter[0].Max = 2000;
     fx[kTremolo].Enabled = false;
     fx[kTremolo].Func = tremolo;
     
@@ -82,17 +80,10 @@ void effect_init(void)
     fx[kBitcrusher].Enabled = false;
     fx[kBitcrusher].Func = bitcrusher;
      
-    setDefaults();
-    effect_updateParams();
-}
-
-void setDefaults(void)
-{
-    tremolo_set_period(50);
-    //chorus_set_period(50);
-    
     sample = 0;
     sample_ready = false;
+    
+    effect_updateParams();
 }
 
 void effect_updateParams()
@@ -103,6 +94,7 @@ void effect_updateParams()
     distortion_set_percentage(fx[kDistortion].Parameter[1].Value);
     distortion_set_symetric(fx[kDistortion].Parameter[0].Value);
     bitcrusher_setBitdepth(fx[kBitcrusher].Parameter[0].Value);
-     bitcrusher_setSampleDivisor(fx[kBitcrusher].Parameter[1].Value);
-     chorus_set_period(fx[kChorus].Parameter[0].Value);
+    bitcrusher_setSampleDivisor(fx[kBitcrusher].Parameter[1].Value);
+    chorus_set_period(fx[kChorus].Parameter[0].Value);
+    tremolo_set_period(fx[kTremolo].Parameter[0].Value);
 }

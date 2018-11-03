@@ -33,6 +33,8 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
+#define CHORUS_BUF_SIZE 340
+
 signed int chorus(signed int chorus_in);
 float chorus_get_freq(void);
 int chorus_get_period(void);

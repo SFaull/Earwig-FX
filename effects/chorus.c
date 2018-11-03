@@ -3,13 +3,7 @@
 #include <stdbool.h>
 #include <math.h> 
 
-#define CHORUS_BUF_SIZE 340
-
-int chorusPeriod = 195; // chorus period used to determine the frequency (default value)
-float chorusFreq;
-
-int chorus_get_period(void) { return chorusPeriod; }
-float chorus_get_freq(void) { return chorusFreq; }
+int chorusPeriod;
 
 void chorus_set_period(int period) 
 {     
@@ -17,8 +11,6 @@ void chorus_set_period(int period)
     float a = timePeriod*Fs;
     int b = 2*CHORUS_BUF_SIZE;
     chorusPeriod = (int)(a/(float)b);
-
-    //printf("Chorus Period:,%d, %lu, %d, %d\n",chorusPeriod);
 }
 
 void chorus_set_freq(int freq) 
@@ -28,8 +20,6 @@ void chorus_set_freq(int freq)
     float a = timePeriod*Fs;
     int b = 2*CHORUS_BUF_SIZE;
     chorusPeriod = (int)(a/(float)b);
-
-    printf("Chorus Freq: %dHz,%d, %lu, %d, %d\n", freq, Fs, a, b, chorusPeriod);
 }
 
 signed int chorus(signed int chorus_in)
