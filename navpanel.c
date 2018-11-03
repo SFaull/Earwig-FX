@@ -19,7 +19,41 @@ static timer_t navpanel_update_timer;
 static timer_t navpanel_long_press_timer1;
 static timer_t navpanel_long_press_timer2;
 static timer_t encoder_interval;
-static float navpanel_encoder_speed; // steps per second
+static int navpanel_encoder_speed; // steps per second
+
+static int step_LUT[30] = 
+{
+    1,
+    1,
+    2,
+    3,
+    4,
+    6,
+    8,
+    11,
+    16,
+    23,
+    32,
+    45,
+    64,
+    91,
+    128,
+    181,
+    256,
+    362,
+    512,
+    724,
+    1024,
+    1448,
+    2048,
+    2896,
+    4096,
+    5793,
+    8192,
+    11585,
+    16384,
+    23170
+};
 
 void navpanel_init(void)
 {    
@@ -36,15 +70,7 @@ void navpanel_init(void)
 
 int navpanel_getEncoderSteps(void)
 {
-    int step;
-    
-    if (navpanel_encoder_speed < 2.0)
-        step = 1;
-    else if (navpanel_encoder_speed < 8.0)
-        step = (int)pow(2,navpanel_encoder_speed/4);
-    else
-        step = (int)pow(2,navpanel_encoder_speed/2);
-    return step;
+    return step_LUT[navpanel_encoder_speed-1];
 }
 
 control_t navpanel_getControl(void)
@@ -187,5 +213,5 @@ void calculate_encoder_speed(void)
     timer_start(&encoder_interval);
     
     //printf("Time since last step: %lu \n", elapsed);
-    printf("%f sps\n", navpanel_encoder_speed);
+    //printf("%d sps\n", navpanel_encoder_speed);
 }
