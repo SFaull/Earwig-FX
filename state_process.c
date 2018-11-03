@@ -303,6 +303,7 @@ static void incValue(void)
 
 static void decValue(void)
 {
+
     currentParameterValue-=navpanel_getEncoderSteps();
     if(currentParameterValue < currentFx->Parameter[index].Min)
         currentParameterValue = currentFx->Parameter[index].Min;

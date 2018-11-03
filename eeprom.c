@@ -101,7 +101,7 @@ unsigned char eeprom_readByte(unsigned int address)
     return data;
 }
 
-void eeprom_writeSeq(unsigned int address, unsigned char *data)
+void eeprom_writeSeq(unsigned int address, unsigned char *data,  unsigned char length)
 {    
     ResetVariables_I2C1();
     StartI2C1();
@@ -127,7 +127,8 @@ void eeprom_writeSeq(unsigned int address, unsigned char *data)
     
     IdleI2C1();
 
-	MasterputsI2C1(data);					//Write Data
+	MasterputslenI2C1(data, length);					//Write Data
+    printf("Write: %d", *data);
     WaitFlag();
     WaitForACK();
     
@@ -181,6 +182,7 @@ void eeprom_readSeq(unsigned int address, unsigned char *rdptr, unsigned char le
 
     // TODO: perform check on return value of I2C read
 	MastergetsI2C1(length, rdptr);		//read Length number of bytes
+    printf("Read: %d", *rdptr);
     
     IdleI2C1();
     

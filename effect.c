@@ -4,6 +4,7 @@
  * Description:
  */
 
+#include "config.h"
 #include "effect.h"
 #include "effects/delay.h"
 #include "effects/chorus.h"
@@ -35,7 +36,7 @@ void effect_init(void)
     fx[kDelay].Enabled = false;
     fx[kDelay].Func = delay; // function pointer to delay function
     
-
+/*
     fx[kDistortion].Name = "Distortion";
     fx[kDistortion].Parameter[0].Name = "Symmetric";
     fx[kDistortion].Parameter[0].Unit = "";
@@ -49,7 +50,7 @@ void effect_init(void)
     fx[kDistortion].Parameter[1].Max = 100;
     fx[kDistortion].Enabled = false;
     fx[kDistortion].Func = distortion;
-    
+    */
     fx[kTremolo].Name = "Tremolo";
     fx[kTremolo].Parameter[0].Name = "Frequency";
     fx[kTremolo].Parameter[0].Unit = "Hz";
@@ -84,6 +85,9 @@ void effect_init(void)
      
     setDefaults();
     effect_updateParams();
+    config_load();
+    
+    printf("Config: %s, %s, %s, %d, %d, %d", fx[kDistortion].Name , fx[kDistortion].Parameter[0].Name, fx[kDistortion].Parameter[0].Unit, fx[kDistortion].Parameter[0].Value, fx[kDistortion].Parameter[0].Min, fx[kDistortion].Parameter[0].Max);
 }
 
 void setDefaults(void)
@@ -103,5 +107,7 @@ void effect_updateParams()
     distortion_set_percentage(fx[kDistortion].Parameter[1].Value);
     distortion_set_symetric(fx[kDistortion].Parameter[0].Value);
     bitcrusher_setBitdepth(fx[kBitcrusher].Parameter[0].Value);
-     bitcrusher_setSampleDivisor(fx[kBitcrusher].Parameter[1].Value);
+    bitcrusher_setSampleDivisor(fx[kBitcrusher].Parameter[1].Value);
+    
+    config_save();
 }

@@ -152,6 +152,22 @@ unsigned int MasterputsI2C1(unsigned char * wrptr)
     }
     return 0;			
 }
+
+unsigned int MasterputslenI2C1(unsigned char * wrptr, unsigned char length)
+{
+    while(length)                           //transmit data until null char
+    {
+        if(MasterWriteI2C1(*wrptr) == -1)	    // write a byte
+        return -3;                          //return with write collison error
+
+        while(I2C1STATbits.TBF);             //Wait till data is transmitted.
+
+        IdleI2C1();
+        wrptr++;
+        length--;
+    }
+    return 0;			
+}
  
 void ResetVariables_I2C1(void)
 {
