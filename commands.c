@@ -6,11 +6,13 @@
 #include "parser.h"
 #include "version.h"
 #include "navpanel.h"
+#include "effect.h"
 
 static void info(void);
 static void LED_on(void);
 static void LED_off(void);
 static void remote_control(void);
+static void set_effect_parameter(void);
 static void process_example(void);
 static void reset(void);
 static void help(void);
@@ -26,6 +28,8 @@ void commands_init(void)
     parser_addCommand("LED:ON", LED_on);       // Turns LED on
     parser_addCommand("LED:OFF", LED_off);       // Turns LED on
     parser_addCommand("CONTROL", remote_control);
+    parser_addCommand("SET:EFFECT:PARAM", set_effect_parameter);
+    parser_addCommand("GET:SUPPORTEDEFFECTS", effect_printEffectList);
     parser_addDefaultHandler(unrecognized);  // Handler for command that isn't matched  (says "What?") 
 }
 
@@ -47,6 +51,57 @@ static void LED_on(void)
 static void LED_off(void)
 {
   printf("LED off\n"); 
+}
+
+/*
+ * Syntax: <effect name> <paramter name> <value>
+ */
+static void set_effect_parameter(void)
+{
+    printf("Setting effect param...\n");
+    char *effect; 
+    char *param;
+    char *value;
+    int val; 
+    int j;
+
+    // store the arguments
+    effect = parser_next(); 
+    param = parser_next();
+    value = parser_next();
+
+    // escape if any arguments not specified
+    if (effect == NULL || param == NULL || value == NULL)
+    {
+        printf("ERROR: Argument syntax\n");
+        return;
+    }
+
+    // convert the value to an integer
+    val = atoi(value);
+  
+    // look up the effect name
+    int fxindex = effect_getFxIndexByName(effect);
+    int paramindex = effect_getParamIndexByName(fxindex, param);
+    
+    if (fxindex == -1 || paramindex == -1)
+    {
+        printf("ERROR: Argument syntax\n");
+        return;
+    }
+    
+    int min, max;
+    min = fx[fxindex].Parameter[paramindex].Min;
+    max = fx[fxindex].Parameter[paramindex].Max;
+    
+    if(val >= min && val <= max)
+    {
+        fx[fxindex].Parameter[paramindex].Value = val;
+        effect_updateParams();
+        printf("%s %s set to %i", fx[fxindex].Name, fx[fxindex].Parameter[paramindex].Name, fx[fxindex].Parameter[paramindex].Value);
+    }
+    else
+        printf("ERROR: Value out of range\n");
 }
 
 static void remote_control(void)

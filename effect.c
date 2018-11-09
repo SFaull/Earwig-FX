@@ -128,3 +128,63 @@ void effect_process(void)
          sample_ready = false;
     }
 }
+
+int effect_getFxIndexByName(char* str)
+{
+    int i, j;
+    for(i=0; i<kEffectCount; i++)
+    {
+        char *name = fx[i].Name;
+        j = 0;
+        bool match = true;
+        
+        while(str[j] != '\0' && name[j] != '\0') 
+        {
+            match &= (toupper(name[j]) == str[j]);
+            j++;
+        }
+        
+        if (match)
+        {
+            //printf("FOUND MATCH: %s, %s\n", name, effect);
+            return i;
+        }
+    }
+    return -1;  // no match
+}
+
+int effect_getParamIndexByName(int effectIndex, char* str)
+{
+    int i, j;
+    for(i=0; i<MAX_PARAMETERS; i++)
+    {
+        char *name = fx[effectIndex].Parameter[i].Name;
+        j = 0;
+        bool match = true;
+        
+        while(str[j] != '\0' && name[j] != '\0') 
+        {
+            match &= (toupper(name[j]) == str[j]);
+            j++;
+        }
+        
+        if (match)
+        {
+            //printf("FOUND MATCH: %s, %s\n", name, effect);
+            return i;
+        }
+    }
+    return -1;  // no match
+}
+
+void effect_printEffectList(void)
+{
+    int i;
+    for(i=0; i<kEffectCount; i++)
+    {
+        if (i <kEffectCount-1)
+            printf("%s,", fx[i].Name);
+        else 
+            printf("%s\n", fx[i].Name);
+    }
+}

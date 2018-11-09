@@ -48,6 +48,9 @@ void effect_init(void);
 void effect_updateParams(void);
 void effect_process(void);
 effectInfo_t *effect_get_by_index(int i);
+int effect_getFxIndexByName(char* str);
+int effect_getParamIndexByName(int effectIndex, char* str);
+void effect_printEffectList(void);
 
 
 extern effectInfo_t fx[kEffectCount];
