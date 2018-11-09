@@ -325,7 +325,7 @@ static void drawFxChain(void)
         }
     }
     oled_clear();
-    oled_println("Home");
+    //oled_println("Home");
     
     if (count == 0)
         oled_println("No Effects...");

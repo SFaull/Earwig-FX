@@ -45,7 +45,8 @@ typedef enum {
 } effect_t;
 
 void effect_init(void);
-void effect_updateParams();
+void effect_updateParams(void);
+void effect_process(void);
 effectInfo_t *effect_get_by_index(int i);
 
 

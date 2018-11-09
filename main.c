@@ -53,15 +53,7 @@ int16_t main(void)
        heartbeat_process();
        navpanel_process();
        state_process();
-       
-       if (sample_ready)
-       {
-            int i;
-            for(i=0; i<kEffectCount; i++)
-                 if(fx[i].Enabled)
-                     sample = fx[i].Func(sample);
-            
-            sample_ready = false;
-       }
+       effect_process();
+
     }
 }

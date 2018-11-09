@@ -101,7 +101,7 @@ void effect_init(void)
     effect_updateParams();
 }
 
-void effect_updateParams()
+void effect_updateParams(void)
 {
     // TODO: this function sets to a discrete level - 0-16... could this be more intuitive?
     delay_set_decay((int)(fx[kDelay].Parameter[1].Value * 16 * 0.01));
@@ -114,4 +114,17 @@ void effect_updateParams()
     tremolo_set_period(fx[kTremolo].Parameter[0].Value);
     bitcrusher_setOctave(fx[kPitchshift].Parameter[0].Value);
     bitcrusher_setDetune(fx[kPitchshift].Parameter[1].Value);
+}
+
+void effect_process(void)
+{
+    if (sample_ready)
+    {
+         int i;
+         for(i=0; i<kEffectCount; i++)
+              if(fx[i].Enabled)
+                  sample = fx[i].Func(sample);
+
+         sample_ready = false;
+    }
 }
