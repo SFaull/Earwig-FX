@@ -9,6 +9,15 @@
 #include "eeprom.h"
 #include <stdio.h>
 
+void eeprom_erase(void)
+{
+    int i;
+    for (i=0; i<EEPROM_SIZE; i++)
+    {
+        eeprom_writeByte(i, 0xFF);
+    }
+}
+
 void eeprom_writeByte(unsigned int address, unsigned char data)
 {    
     ResetVariables_I2C1();
