@@ -17,10 +17,14 @@
 static bool selftest_eeprom();
 static bool selftest_sram();
 static void selftest_oled();
+static void printRebootCause(void);
 
 bool selftest()
 {
     bool success = true;
+    
+    // print the reboot cause
+    printRebootCause();
     
     //success = selftest_eeprom();
     success = selftest_sram();
@@ -30,6 +34,15 @@ bool selftest()
     //selftest_eeprom();
 
     return success;
+}
+
+static void printRebootCause(void)
+{
+    unsigned int i;
+    const unsigned char * const px = (unsigned char*)&RCONbits;
+    printf("Reboot cause: ");
+    for (i = 0; i < sizeof(RCONbits); ++i) printf("%02X ", px[i]);
+    printf("\n");
 }
 
 static bool selftest_eeprom()
