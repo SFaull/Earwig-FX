@@ -18,6 +18,7 @@ static void set_effect_parameter(void);
 static void process_example(void);
 static void reset(void);
 static void help(void);
+static void dump(void);
 static void unrecognized(void);
 
 void commands_init(void)
@@ -26,6 +27,7 @@ void commands_init(void)
     
     parser_addCommand("*IDN?", info);      
     parser_addCommand("*RST", reset);   
+    parser_addCommand("DUMP", dump);   
     parser_addCommand("HELP", help);   
     parser_addCommand("NV:ERASE", nv_erase);   
     parser_addCommand("LED:ON", LED_on);       // Turns LED on
@@ -44,6 +46,63 @@ static void help(void)
 static void info(void)
 {
     printf("%s, %s, %s %s\n", MODEL_STRING, FW_VERSION_STR, BUILD_DATE, BUILD_TIME);
+}
+
+/**
+ * @brief Dump address space
+ *
+ * Syntax: DUMP [<start> [<qty>]]
+ *
+ * Where <start> is the start address and <qty> is the number of bytes to dump
+ */
+static void dump(void)
+{
+    char *arg1; 
+    char *arg2;
+    // store the arguments
+    arg1 = parser_next(); 
+    arg2 = parser_next();
+    
+	uint8_t * start = (uint8_t *)0x000200UL; // start of User program flash memory (Figure 4-1 in datasheet)
+	long qty = 128;  // 87'552 is the size of the entire user program flash memory
+	
+    // If both arguments were provided
+	if(arg1 != NULL && arg2 != NULL)
+	{
+		long value = strtol(arg1, NULL, 0);
+		start = (uint8_t*)value;
+	}
+		
+    // if only 1 arg was provided
+	if(arg1 != NULL && arg2 == NULL)
+		qty = strtol(arg1, NULL, 0);
+	
+	char c[17];
+	c[0] = 0;
+	int j = 0;
+    int i;
+	for(i = 0 ; i<qty; i++)
+	{
+		if(i%16 == 0)
+		{
+			c[j] = 0;
+			j = 0;
+			if(i)
+				printf("  %s\n", c);
+			printf(" %08X :", (unsigned int)&start[i]);
+		}
+		uint8_t d = start[i];
+		
+		if(isprint ((int)d))
+			c[j] = d;
+		else
+			c[j] = '.';
+		j++;	
+		printf(" %02X", (unsigned int)d);
+	}
+	c[j] = 0;
+	printf("  %s\n", c);
+	return;
 }
 
 static void LED_on(void)
