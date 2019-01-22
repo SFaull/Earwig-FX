@@ -54,6 +54,16 @@ static void info(void)
  * Syntax: DUMP [<start> [<qty>]]
  *
  * Where <start> is the start address and <qty> is the number of bytes to dump
+ * 
+ * Key memory locations:
+ * Memory Type      Start Address
+ * -------------------------------
+ * SFR Space        0x0000
+ * X Data RAM       0x0800
+ * Y Data RAM       0x2800
+ * DMA RAM          0x4000
+ * X Data           0x4800  <- address error will occur if you exceed this memory address.
+ * Unimplemented    0x8000
  */
 static void dump(void)
 {
@@ -63,19 +73,23 @@ static void dump(void)
     arg1 = parser_next(); 
     arg2 = parser_next();
     
-	uint8_t * start = (uint8_t *)0x000200UL; // start of User program flash memory (Figure 4-1 in datasheet)
-	long qty = 128;  // 87'552 is the size of the entire user program flash memory
+
+    
+	uint8_t * start = (uint8_t *)0x0UL; // start of User program flash memory (Figure 4-1 in datasheet)
+	long qty = 128;
 	
     // If both arguments were provided
-	if(arg1 != NULL && arg2 != NULL)
+	if(arg1 != NULL)
 	{
 		long value = strtol(arg1, NULL, 0);
 		start = (uint8_t*)value;
 	}
 		
     // if only 1 arg was provided
-	if(arg1 != NULL && arg2 == NULL)
-		qty = strtol(arg1, NULL, 0);
+	if(arg2 != NULL)
+    {
+		qty = strtol(arg2, NULL, 0);
+    }
 	
 	char c[17];
 	c[0] = 0;
