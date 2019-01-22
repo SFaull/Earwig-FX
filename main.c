@@ -23,6 +23,7 @@
 #include "parser.h"
 #include "commands.h"
 #include "heartbeat.h"
+#include "watchdog.h"
 
 #include "effects/chorus.h"
 
@@ -42,18 +43,29 @@ int16_t main(void)
     navpanel_init();
     effect_init();
     commands_init();
-    //selftest();
+    selftest();
+    watchdog_init();
+
+    // show a warning if watchdog trip
+    if(RCONbits.WDTO)
+    {
+        oled_clear(); 
+        oled_write_string("WATCHDOG RESET!");
+        oled_update();
+    }
     
     __delay_ms(1000);    // leave the splashscreen on for a short period
     printf("Ready \n");
     
+
+    
     
     while(1)
     {
+       watchdog_kick();
        heartbeat_process();
        navpanel_process();
        state_process();
        effect_process();
-
     }
 }
