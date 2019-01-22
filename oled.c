@@ -98,12 +98,22 @@ uint8_t buffer[DISPLAY_BUFFER_SIZE];
   oled_command(0x2e);            // stop scroll
   oled_clear(); // ensure display is clear
 
-  // show splash screen
-  oled_draw_xbm(0, 0, SPLASH_WIDTH, SPLASH_HEIGHT, splash);
   oled_update();    // ensure display has been cleared prior to turning it on
   
   oled_command(DISPLAYON);
 }
+ 
+ void oled_splashscreen(void)
+ {
+     oled_draw_xbm(0, 0, SPLASH_WIDTH, SPLASH_HEIGHT, splash);
+     oled_update();    // ensure display has been cleared prior to turning it on
+ }
+ 
+  void oled_wd_splashscreen(void)
+ {
+     oled_draw_xbm(0, 0, WD_SPLASH_WIDTH, WD_SPLASH_HEIGHT, wd_splash);
+     oled_update();    // ensure display has been cleared prior to turning it on
+ }
 
 void oled_update(void)
 {

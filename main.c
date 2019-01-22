@@ -48,11 +48,9 @@ int16_t main(void)
 
     // show a warning if watchdog trip
     if(RCONbits.WDTO)
-    {
-        oled_clear(); 
-        oled_write_string("WATCHDOG RESET!");
-        oled_update();
-    }
+        oled_wd_splashscreen();
+    else
+        oled_splashscreen();
     
     __delay_ms(1000);    // leave the splashscreen on for a short period
     printf("Ready \n");
