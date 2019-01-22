@@ -56,6 +56,8 @@ void oled_data(char c);
 void oled_init(void);
 void oled_update(void);
 void oled_draw_xbm(int16_t xMove, int16_t yMove, int16_t width, int16_t height, const char *xbm);
+void oled_splashscreen(void);
+void oled_wd_splashscreen(void);
 int oled_get_char_width(char c);
 int oled_get_string_width(char *buffer);
 void oled_write_char(char c);
