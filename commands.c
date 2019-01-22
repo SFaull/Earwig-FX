@@ -19,6 +19,7 @@ static void process_example(void);
 static void reset(void);
 static void help(void);
 static void dump(void);
+static void test_watchdog(void);
 static void unrecognized(void);
 
 void commands_init(void)
@@ -29,6 +30,7 @@ void commands_init(void)
     parser_addCommand("*RST", reset);   
     parser_addCommand("DUMP", dump);   
     parser_addCommand("HELP", help);   
+    parser_addCommand("TEST:WD", test_watchdog); 
     parser_addCommand("NV:ERASE", nv_erase);   
     parser_addCommand("LED:ON", LED_on);       // Turns LED on
     parser_addCommand("LED:OFF", LED_off);       // Turns LED on
@@ -46,6 +48,21 @@ static void help(void)
 static void info(void)
 {
     printf("%s, %s, %s %s\n", MODEL_STRING, FW_VERSION_STR, BUILD_DATE, BUILD_TIME);
+}
+
+static void test_watchdog(void)
+{
+    const int interval = 100;
+    int time_in_ms = 0;
+    
+    printf("Starting WDT:\n");
+    while(time_in_ms < 5000)
+    {
+        __delay_ms(interval);
+        time_in_ms += interval;
+        printf("%ims\n", time_in_ms);
+    }
+    printf("WDT failed\n");
 }
 
 /**
