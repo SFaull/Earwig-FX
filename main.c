@@ -39,13 +39,13 @@ int16_t main(void)
     wm8510_config(); //configure WM8510    
     sram_init(seq); //initialise 23LC1024 in sequential mode
     InitI2C1(); //initialise i2c peripheral
-    oled_init(); //initialise SSD1306 OLED display
     navpanel_init();
     effect_init();
     commands_init();
     selftest();
     watchdog_init();
-
+    oled_init(); //initialise SSD1306 OLED display
+    
     // show a warning if watchdog trip
     if(RCONbits.WDTO)
         oled_wd_splashscreen();

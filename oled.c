@@ -23,6 +23,7 @@ uint8_t buffer[DISPLAY_BUFFER_SIZE];
     ResetVariables_I2C1();
     StartI2C1();
     WaitFlag();
+    IdleI2C1();	//Wait to complete 
     
     // I2C command
     uint8_t control = 0x00;   // Co = 0, D/C = 0
@@ -49,6 +50,7 @@ uint8_t buffer[DISPLAY_BUFFER_SIZE];
     ResetVariables_I2C1();
     StartI2C1();
     WaitFlag();
+    IdleI2C1();	//Wait to complete 
     
     uint8_t control = 0x40;   // Co = 0, D/C = 1
     
