@@ -55,7 +55,7 @@ void eeprom_writeByte(unsigned int address, unsigned char data)
     WaitForACK();
     IdleI2C1();	//Wait to complete  
     
-    __delay_ms(3);  // TODO FIXME - must allow at least this long before attempting to read else will hang
+    __delay_ms(10);  // TODO FIXME - must allow at least this long before attempting to read else will hang
 }
 
 unsigned char eeprom_readByte(unsigned int address)
