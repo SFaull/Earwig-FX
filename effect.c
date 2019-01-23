@@ -99,7 +99,7 @@ void effect_init(void)
     sample = 0;
     sample_ready = false;
     
-    //config_load();
+    config_load();
     
     effect_updateParams();
 }
@@ -117,8 +117,6 @@ void effect_updateParams(void)
     tremolo_set_period(fx[kTremolo].Parameter[0].Value);
     bitcrusher_setOctave(fx[kPitchshift].Parameter[0].Value);
     bitcrusher_setDetune(fx[kPitchshift].Parameter[1].Value);
-    
-    //config_save();
 }
 
 void effect_process(void)

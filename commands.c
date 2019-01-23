@@ -81,6 +81,7 @@ static void test_watchdog(void)
  * DMA RAM          0x4000
  * X Data           0x4800  <- address error will occur if you exceed this memory address.
  * Unimplemented    0x8000
+ * Progmem          0xAB00
  */
 static void dump(void)
 {

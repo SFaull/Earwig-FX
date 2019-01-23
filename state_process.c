@@ -11,6 +11,7 @@
 #include "oled.h"
 #include "menu.h"
 #include "effect.h"
+#include "config.h"
 
 state_t currentState = kStartup;
 
@@ -75,7 +76,9 @@ static state_t do_Startup(void)
 }
 static state_t do_Home(void)
 {
-    if (navpanel_getControl() == kOK)
+    control_t ctrl = navpanel_getControl();
+    
+    if (ctrl == kOK)
         return transition_B();
         
     return kHome;
@@ -150,6 +153,7 @@ static state_t transition_A(void)
 {
     drawFxChain();
     printf("Transition A \n");
+    config_save();
     return kHome;
 }
 static state_t transition_B(void)

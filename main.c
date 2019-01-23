@@ -40,7 +40,6 @@ int16_t main(void)
     sram_init(seq); //initialise 23LC1024 in sequential mode
     InitI2C1(); //initialise i2c peripheral
     navpanel_init();
-    effect_init();
     commands_init();
     selftest();
     watchdog_init();
@@ -52,6 +51,7 @@ int16_t main(void)
     else
         oled_splashscreen();
     
+    effect_init();
     __delay_ms(1000);    // leave the splashscreen on for a short period
     printf("Ready \n");
     
