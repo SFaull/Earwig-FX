@@ -18,6 +18,7 @@ state_t currentState = kStartup;
 static state_t do_Startup(void);
 static state_t do_Home(void);
 static state_t do_MainMenu(void);
+static state_t do_SettingsMenu(void);
 static state_t do_ParamMenu(void);
 static state_t do_ParamEdit(void);
 
@@ -28,9 +29,11 @@ static state_t transition_D(void);
 static state_t transition_E(void);
 static state_t transition_F(void);
 static state_t transition_G(void);
+static state_t transition_H(void);
 
 static void init_mainMenu(void);
 static void refresh_mainMenu(void);
+static void init_settingsMenu(void);
 static void init_paramMenu();
 static void refresh_paramMenu();
 static void incValue(void);
@@ -43,6 +46,7 @@ static int currentParameterValue;
 
 menu_t mainMenu;
 menu_t paramMenu;
+menu_t settingsMenu;
 
 
 void state_process(void)
@@ -64,6 +68,9 @@ void state_process(void)
         case kParamEdit:
             currentState = do_ParamEdit();
             break;
+        case kSettingsMenu:
+            currentState = do_SettingsMenu();
+            break;
         default:
             currentState = kHome;
             break;
@@ -80,6 +87,9 @@ static state_t do_Home(void)
     
     if (ctrl == kOK)
         return transition_B();
+    
+    if (ctrl == kOKLong)
+        return transition_H();
         
     return kHome;
 }
@@ -109,6 +119,25 @@ static state_t do_MainMenu(void)
     
     return kMainMenu;
 }
+
+static state_t do_SettingsMenu(void)
+{
+    switch(navpanel_getControl()) 
+    {
+        case kRotateCW:
+            menu_nextPos(&settingsMenu);
+            break;
+        case kRotateCCW:
+            menu_prevPos(&settingsMenu);
+            break;
+        case kBack:
+            return transition_A();
+        default:
+            break;
+    }
+    return kSettingsMenu;
+}
+
 static state_t do_ParamMenu(void)
 {
     switch(navpanel_getControl()) 
@@ -205,9 +234,17 @@ static state_t transition_F(void)
 static state_t transition_G(void)
 {
     printf("Transition G \n");
-    init_paramMenu();  // TODO: fixme
+    init_paramMenu();
     menu_draw(&paramMenu);
     return kParamMenu;
+}
+
+static state_t transition_H(void)
+{
+    init_settingsMenu();
+    printf("Transition H \n");
+    menu_draw(&settingsMenu);
+    return kSettingsMenu;
 }
 
 static void init_mainMenu(void)
@@ -230,6 +267,20 @@ static void init_mainMenu(void)
     mainMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
     mainMenu.SelectedPosition = 0;  // always select the top item
 }
+
+static void init_settingsMenu(void)
+{
+    // setup main menu
+    settingsMenu.Heading = "Settings";
+    settingsMenu.Item[0] = "Device Info";
+    settingsMenu.Item[1] = "Test Watchdog";
+    settingsMenu.Item[1] = "Bonus Features";
+    settingsMenu.Item[2] = "Restore Defaults";
+
+    settingsMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
+    settingsMenu.SelectedPosition = 0;  // always select the top item
+}
+
 
 static void refresh_mainMenu(void)
 {

@@ -14,7 +14,8 @@ typedef enum {
     kHome = 1,
     kMainMenu = 2,
     kParamMenu = 3,
-    kParamEdit = 4   
+    kParamEdit = 4   ,
+    kSettingsMenu = 5
 } state_t;
 
 void state_process(void);
