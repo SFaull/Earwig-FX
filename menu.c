@@ -65,3 +65,8 @@ int menu_getCount(menu_t *menu)
     }
     return i+1;
 }
+
+int menu_selectedIndex(menu_t *menu)
+{
+    return (menu->SelectedPosition + menu->FirstDisplayedItem);
+}

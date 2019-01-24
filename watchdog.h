@@ -11,6 +11,7 @@
 
 void watchdog_init(void);
 void watchdog_kick(void);
+void watchdog_test(void);
 
 #endif	/* WATCHDOG_H */
 

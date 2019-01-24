@@ -12,6 +12,7 @@
 #include "menu.h"
 #include "effect.h"
 #include "config.h"
+#include "watchdog.h"
 
 state_t currentState = kStartup;
 
@@ -109,7 +110,7 @@ static state_t do_MainMenu(void)
         case kOKLong:
             return transition_C();
         case kOK:
-            fx[mainMenu.SelectedPosition + mainMenu.FirstDisplayedItem].Enabled = (fx[mainMenu.SelectedPosition + mainMenu.FirstDisplayedItem].Enabled==0 ?  1 : 0);
+            fx[menu_selectedIndex(&mainMenu)].Enabled = (fx[menu_selectedIndex(&mainMenu)].Enabled==0 ?  1 : 0);
             refresh_mainMenu();
             menu_draw(&mainMenu);
             break;
@@ -122,8 +123,23 @@ static state_t do_MainMenu(void)
 
 static state_t do_SettingsMenu(void)
 {
+    int i;
     switch(navpanel_getControl()) 
     {
+        case kOK:
+            i = menu_selectedIndex(&settingsMenu);
+            printf("index: %i", i);
+            if(i == kTestWatchdog)
+                watchdog_test();
+            
+            if(i == kRestoreDefaults)
+            {
+                effect_set_defaults();
+                config_save();
+                // TODO: display success messagebox
+                return transition_A();
+            }
+            break;
         case kRotateCW:
             menu_nextPos(&settingsMenu);
             break;
@@ -195,7 +211,7 @@ static state_t transition_B(void)
 
 static state_t transition_C(void)
 {
-    int i = mainMenu.SelectedPosition + mainMenu.FirstDisplayedItem;
+    int i = menu_selectedIndex(&mainMenu);
     currentFx = &fx[i];
     init_paramMenu(currentFx);
     printf("Transition C \n");
@@ -214,7 +230,7 @@ static state_t transition_D(void)
 
 static state_t transition_E(void)
 {
-    index = paramMenu.SelectedPosition + paramMenu.FirstDisplayedItem;
+    index = menu_selectedIndex(&paramMenu);
     currentParameterValue = currentFx->Parameter[index].Value;
     printf("Transition E \n");
     // TODO: do something to differentiate edit mode (flash the selection box or something)
@@ -272,10 +288,10 @@ static void init_settingsMenu(void)
 {
     // setup main menu
     settingsMenu.Heading = "Settings";
-    settingsMenu.Item[0] = "Device Info";
-    settingsMenu.Item[1] = "Test Watchdog";
-    settingsMenu.Item[1] = "Bonus Features";
-    settingsMenu.Item[2] = "Restore Defaults";
+    settingsMenu.Item[kDeviceInfo] = "Device Info";
+    settingsMenu.Item[kTestWatchdog] = "Test Watchdog";
+    settingsMenu.Item[kBonusFeatures] = "Bonus Features";
+    settingsMenu.Item[kRestoreDefaults] = "Restore Defaults";
 
     settingsMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
     settingsMenu.SelectedPosition = 0;  // always select the top item

@@ -21,5 +21,6 @@ void menu_draw(menu_t *menu);
 void menu_nextPos(menu_t *menu);
 void menu_prevPos(menu_t *menu);
 int menu_getCount(menu_t *menu);
+int menu_selectedIndex(menu_t *menu);
 
 #endif	/* MENU_H */
