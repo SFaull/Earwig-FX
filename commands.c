@@ -8,11 +8,13 @@
 #include "navpanel.h"
 #include "effect.h"
 #include "eeprom.h"
+#include "config.h"
 
 static void info(void);
 static void LED_on(void);
 static void LED_off(void);
 static void nv_erase(void);
+static void configure_restore_defaults(void);
 static void remote_control(void);
 static void set_effect_parameter(void);
 static void process_example(void);
@@ -32,6 +34,7 @@ void commands_init(void)
     parser_addCommand("HELP", help);   
     parser_addCommand("TEST:WD", test_watchdog); 
     parser_addCommand("NV:ERASE", nv_erase);   
+    parser_addCommand("CONF:DEFAULT", configure_restore_defaults); 
     parser_addCommand("LED:ON", LED_on);       // Turns LED on
     parser_addCommand("LED:OFF", LED_off);       // Turns LED on
     parser_addCommand("CONTROL", remote_control);
@@ -152,6 +155,12 @@ static void nv_erase(void)
     printf("Erasing NV storage\n"); 
     eeprom_erase();
     printf("Erase complete\n"); 
+}
+
+static void configure_restore_defaults(void)
+{
+    effect_set_defaults();
+    config_save();
 }
 
 /*

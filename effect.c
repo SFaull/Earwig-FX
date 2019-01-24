@@ -21,7 +21,19 @@ bool sample_ready;
 
 void effect_init(void)
 {       
-    fx[kDelay].Name = "Delay";
+    effect_set_defaults();
+     
+    sample = 0;
+    sample_ready = false;
+    
+    config_load();
+    
+    effect_updateParams();
+}
+
+void effect_set_defaults(void)
+{
+        fx[kDelay].Name = "Delay";
     fx[kDelay].Parameter[0].Name = "Delay Time";
     fx[kDelay].Parameter[0].Unit = "ms";
     fx[kDelay].Parameter[0].Value = 200;
@@ -95,13 +107,6 @@ void effect_init(void)
     fx[kPitchshift].Parameter[1].Max = 1000;
     fx[kPitchshift].Enabled = false;
     fx[kPitchshift].Func = pitchshift;
-     
-    sample = 0;
-    sample_ready = false;
-    
-    config_load();
-    
-    effect_updateParams();
 }
 
 void effect_updateParams(void)

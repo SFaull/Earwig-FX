@@ -46,9 +46,9 @@ void config_load(void)
     {
         address = fxIndex*4;
         fx[fxIndex].Enabled = eeprom_readByte(address);
-        fx[fxIndex].Parameter[0].Value = eeprom_readByte(address+1);
-        fx[fxIndex].Parameter[1].Value = eeprom_readByte(address+2);
-        fx[fxIndex].Parameter[2].Value = eeprom_readByte(address+3);
+        eeprom_readSeq(address+1, &fx[fxIndex].Parameter[0].Value, 2);
+        eeprom_readSeq(address+3, &fx[fxIndex].Parameter[1].Value, 2);
+        eeprom_readSeq(address+5, &fx[fxIndex].Parameter[2].Value, 2);
     }
     
     printf("Read complete \n");
@@ -70,10 +70,13 @@ void config_save(void)
         eeprom_writeByte(address, fx[fxIndex].Enabled);
         printf("%i, %i \n", fxIndex, address+1);
         eeprom_writeByte(address+1, fx[fxIndex].Parameter[0].Value);
-        printf("%i, %i \n", fxIndex, address+2);
-        eeprom_writeByte(address+2, fx[fxIndex].Parameter[1].Value);
+        eeprom_writeByte(address+2, fx[fxIndex].Parameter[0].Value >> 8);
         printf("%i, %i \n", fxIndex, address+3);
-        eeprom_writeByte(address+3, fx[fxIndex].Parameter[2].Value);
+        eeprom_writeByte(address+3, fx[fxIndex].Parameter[1].Value);
+        eeprom_writeByte(address+4, fx[fxIndex].Parameter[1].Value >> 8);
+        printf("%i, %i \n", fxIndex, address+5);
+        eeprom_writeByte(address+5, fx[fxIndex].Parameter[2].Value);
+        eeprom_writeByte(address+6, fx[fxIndex].Parameter[2].Value >> 8);
     }
     eeprom_writeByte(EEPROM_SIZE-4, 0xDE);
     eeprom_writeByte(EEPROM_SIZE-3, 0xAD);
