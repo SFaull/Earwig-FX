@@ -1,11 +1,31 @@
 #include "config.h"
 #include "effect.h"
 #include "eeprom.h"
+#include <stddef.h>
+
 
 static void config_setDefaults(void);
+static void config_generateLUT(void);
+
+static uint16_t patch_lut[MAX_PATCHES] = {0};
+
+void config_init(void)
+{
+    printf("-------- CONFIG SIZE INFO ---------\n");
+    
+    
+    printf("Header:             %d\n", sizeof(config_header_t));
+    printf("LUT:                %d\n", sizeof(config_lut_t));
+    printf("Patch:              %d\n", sizeof(config_patch_t));
+    printf("    FX:             %d\n", sizeof(config_fx_t));
+    printf("Total:              %d\n", sizeof(config_nv_t));
+    printf("-----------------------------------\n");
+}
 
 bool config_load(void)
 {
+    config_init();
+    config_generateLUT();
     // read signature
     uint8_t a = eeprom_readByte(EEPROM_SIZE-4);
     uint8_t b = eeprom_readByte(EEPROM_SIZE-3);
@@ -80,4 +100,19 @@ void config_save(void)
 static void config_setDefaults(void)
 {
     // use the default config (no effects selected)
+}
+
+static void config_generateLUT(void)
+{
+    // get the start address of the look up table
+    //uint8_t start_address = offsetof(config_nv_t, Lut);
+    
+    uint16_t start_address = sizeof(config_nv_t);
+    
+    int i;
+    for(i=0; i<MAX_PATCHES; i++)
+    {
+        patch_lut[i] = start_address + (i * sizeof(config_patch_t));
+        //printf("Index: %i, Address: %d\n", i, patch_lut[i]);
+    }
 }
