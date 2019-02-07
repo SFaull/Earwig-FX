@@ -21,13 +21,20 @@ bool sample_ready;
 
 void effect_init(void)
 {       
-    effect_set_defaults();
-     
     sample = 0;
     sample_ready = false;
     
-    config_load();
+    // load default
+    effect_set_defaults();
     
+    // load the config from nv storage
+    bool valid_config = config_load();
+    
+    // if config wasn't valid, write the defaults to NV
+    if (!valid_config)
+        config_save();
+    
+    // apply the settings to each effect module
     effect_updateParams();
 }
 

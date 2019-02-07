@@ -4,7 +4,7 @@
 
 static void config_setDefaults(void);
 
-void config_load(void)
+bool config_load(void)
 {
     // read signature
     uint8_t a = eeprom_readByte(EEPROM_SIZE-4);
@@ -15,43 +15,33 @@ void config_load(void)
     uint16_t dead = ((uint32_t)a << 8) | (uint32_t)b;
     uint16_t beef = ((uint32_t)c << 8) | (uint32_t)d;
     
+    printf("dead: 0x%04X \n", dead);
+    printf("beef: 0x%04X \n", beef);
+    
     if((dead == 0xDEAD) && (beef == 0xBEEF))
     {    
         printf("Signature match SUCCESS! \n");
-        printf("dead: 0x%04X \n", dead);
-        printf("beef: 0x%04X \n", beef);
-    }
-    else
-    {
-        printf("Signature match FAILED \n");
-        printf("dead: 0x%04X \n", dead);
-        printf("beef: 0x%04X \n", beef);
-        return;
-    }
-    
-    // todo: write defaults if signature not valid, else load config
+        
+        int address;
+        int fxIndex;
 
+        printf("Reading fx config \n");
 
-    
-    // perform validity test
-    // if valid, use
-    // else, set defaults
-    
-    int address;
-    int fxIndex;
-    
-    printf("Reading fx config \n");
-    
-    for(fxIndex=0; fxIndex<kEffectCount; fxIndex++)
-    {
-        address = fxIndex*4;
-        fx[fxIndex].Enabled = eeprom_readByte(address);
-        eeprom_readSeq(address+1, &fx[fxIndex].Parameter[0].Value, 2);
-        eeprom_readSeq(address+3, &fx[fxIndex].Parameter[1].Value, 2);
-        eeprom_readSeq(address+5, &fx[fxIndex].Parameter[2].Value, 2);
+        for(fxIndex=0; fxIndex<kEffectCount; fxIndex++)
+        {
+            address = fxIndex*4;
+            fx[fxIndex].Enabled = eeprom_readByte(address);
+            eeprom_readSeq(address+1, &fx[fxIndex].Parameter[0].Value, 2);
+            eeprom_readSeq(address+3, &fx[fxIndex].Parameter[1].Value, 2);
+            eeprom_readSeq(address+5, &fx[fxIndex].Parameter[2].Value, 2);
+        }
+
+        printf("Read complete \n");
+        return true;
     }
-    
-    printf("Read complete \n");
+
+    printf("Signature match FAILED \n");
+    return false;
 }
 
 void config_save(void)
