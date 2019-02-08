@@ -61,6 +61,7 @@ bool config_verify(void);
 void config_save(void);
 void config_init(void);
 void config_defaults(void);
+void config_applyEffects();
 
 const config_nv_t * config_get_reference(void);
 config_nv_t * config_get_writable_reference(void);

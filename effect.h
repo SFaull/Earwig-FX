@@ -52,6 +52,7 @@ int effect_getFxIndexByName(char* str);
 int effect_getParamIndexByName(int effectIndex, char* str);
 void effect_printEffectList(void);
 void effect_set_defaults(void);
+void effect_loadFromConfig(void);
 
 
 extern effectInfo_t fx[kEffectCount];

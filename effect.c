@@ -27,12 +27,8 @@ void effect_init(void)
     // load default
     effect_set_defaults();
     
-    // load the config from nv storage
-    bool valid_config = config_verify();
-    
-    // if config wasn't valid, write the defaults to NV
-    if (!valid_config)
-        config_defaults();
+    // load from config
+    effect_loadFromConfig();
     
     // apply the settings to each effect module
     effect_updateParams();
@@ -114,6 +110,28 @@ void effect_set_defaults(void)
     fx[kPitchshift].Parameter[1].Max = 1000;
     fx[kPitchshift].Enabled = false;
     fx[kPitchshift].Func = pitchshift;
+}
+
+void effect_loadFromConfig(void)
+{
+    int i;
+    for (i=0; i<kEffectCount; i++)
+    {
+        int j;
+        fx[i].Enabled = config_get_reference()->Patch.Fx[i].Enabled;
+
+        for(j=0; j<MAX_PARAMETERS; j++)
+        {
+            fx[i].Parameter[j].Value = config_get_reference()->Patch.Fx[i].ParamValue[j];
+        }
+    }
+}
+
+void effect_saveToConfig()
+{
+    config_applyEffects();
+    
+    config_save();
 }
 
 void effect_updateParams(void)

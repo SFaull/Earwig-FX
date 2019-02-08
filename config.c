@@ -9,6 +9,32 @@ static uint16_t patch_lut[MAX_PATCHES] = {0};
 
 static config_nv_t config_nv;
 
+/**
+ * @brief Get a reference to the configuration data
+ *
+ * The obtained reference is intentionally read only
+ * Use this for normally access
+ */
+const config_nv_t * config_get_reference(void)
+{
+	return &config_nv;
+}
+
+
+/**
+ * @brief Get a reference to the configuration data
+ *
+ * The obtained reference has read and write access
+ * 
+ * @warning Use this only in calibration and set up routines
+ *
+ * @return A read and write pointer to the configuration data;
+ */
+config_nv_t * config_get_writable_reference(void)
+{
+	return &config_nv;
+}
+
 void config_init(void)
 {
     // print the config size (debug)
@@ -81,6 +107,13 @@ void config_defaults(void)
         config_nv.Lut.Address[i] = 0;
     
     // write the default effect settings
+    config_applyEffects();
+}
+
+void config_applyEffects()
+{
+    int i;
+        // write the default effect settings
     for (i=0; i<kEffectCount; i++)
     {
         int j;

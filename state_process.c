@@ -198,7 +198,7 @@ static state_t transition_A(void)
 {
     drawFxChain();
     printf("Transition A \n");
-    config_save();
+    effect_saveToConfig();
     return kHome;
 }
 static state_t transition_B(void)
