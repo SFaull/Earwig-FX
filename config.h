@@ -56,8 +56,13 @@ typedef struct {
     //config_patch_t Patch[MAX_PATCHES];
 } config_nv_t;                                                          // TOTAL = 280 bytes
 
-bool config_load(void);
+void config_load(void);
+bool config_verify(void);
 void config_save(void);
 void config_init(void);
+void config_defaults(void);
+
+const config_nv_t * config_get_reference(void);
+config_nv_t * config_get_writable_reference(void);
 
 #endif	/* CONFIG_H */

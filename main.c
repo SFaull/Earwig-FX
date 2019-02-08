@@ -24,6 +24,7 @@
 #include "commands.h"
 #include "heartbeat.h"
 #include "watchdog.h"
+#include "config.h"
 
 #include "effects/chorus.h"
 
@@ -51,6 +52,7 @@ int16_t main(void)
     else
         oled_splashscreen();
     
+    config_init();
     effect_init();
     __delay_ms(1000);    // leave the splashscreen on for a short period
     printf("Ready \n");

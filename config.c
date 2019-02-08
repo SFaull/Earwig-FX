@@ -3,14 +3,15 @@
 #include "eeprom.h"
 #include <stddef.h>
 
-
-static void config_setDefaults(void);
 static void config_generateLUT(void);
 
 static uint16_t patch_lut[MAX_PATCHES] = {0};
 
+static config_nv_t config_nv;
+
 void config_init(void)
 {
+    // print the config size (debug)
     printf("-------- CONFIG SIZE INFO ---------\n");
     
     
@@ -20,86 +21,81 @@ void config_init(void)
     printf("    FX:             %d\n", sizeof(config_fx_t));
     printf("Total:              %d\n", sizeof(config_nv_t));
     printf("-----------------------------------\n");
+    
+    
+    // read back all the data from NV
+	uint32_t src = 0;
+	
+	// calculate the destination address 
+	uint8_t * dest = (uint8_t*)&config_nv;
+	
+	// length of the data to read 
+	int32_t length = sizeof(config_nv_t);
+	
+	// Read the all the data from NV 
+	eeprom_readSeq(src, dest, length);
+    
+   // load the config from nv storage
+    bool valid_config = config_verify();
+    
+    // if config wasn't valid, write the defaults to NV
+    // TODO: is this actually a good idea?
+    if (!valid_config)
+        config_defaults();
 }
 
-bool config_load(void)
+bool config_verify(void)
 {
-    config_init();
-    config_generateLUT();
-    // read signature
-    uint8_t a = eeprom_readByte(EEPROM_SIZE-4);
-    uint8_t b = eeprom_readByte(EEPROM_SIZE-3);
-    uint8_t c = eeprom_readByte(EEPROM_SIZE-2);
-    uint8_t d = eeprom_readByte(EEPROM_SIZE-1);
+    uint32_t sig = config_nv.Header.Signature;
+    uint32_t vers = config_nv.Header.Version;
     
-    uint16_t dead = ((uint32_t)a << 8) | (uint32_t)b;
-    uint16_t beef = ((uint32_t)c << 8) | (uint32_t)d;
-    
-    printf("dead: 0x%04X \n", dead);
-    printf("beef: 0x%04X \n", beef);
-    
-    if((dead == 0xDEAD) && (beef == 0xBEEF))
-    {    
-        printf("Signature match SUCCESS! \n");
-        
-        int address;
-        int fxIndex;
-
-        printf("Reading fx config \n");
-
-        for(fxIndex=0; fxIndex<kEffectCount; fxIndex++)
-        {
-            address = fxIndex*4;
-            fx[fxIndex].Enabled = eeprom_readByte(address);
-            eeprom_readSeq(address+1, &fx[fxIndex].Parameter[0].Value, 2);
-            eeprom_readSeq(address+3, &fx[fxIndex].Parameter[1].Value, 2);
-            eeprom_readSeq(address+5, &fx[fxIndex].Parameter[2].Value, 2);
-        }
-
-        printf("Read complete \n");
-        return true;
+    if (sig != CONFIG_SIGNATURE)
+    {
+        printf("CONFIG SIGNATURE INVALID: Expected 0x%08lX, got 0x%08lX\n",CONFIG_SIGNATURE,sig);
+        return false;
     }
-
-    printf("Signature match FAILED \n");
-    return false;
+    if (vers != CONFIG_VERSION)
+    {
+        printf("CONFIG VERSION INVALID: Expected 0x%08lX, got 0x%08lX\n",CONFIG_VERSION,vers);
+        return false;
+    }
+    printf("Config OK\n");
 }
 
 void config_save(void)
-{
-    // write config to eeprom
-    int address;
-    int fxIndex;
-    
-    printf("Writing fx config \n");
-    
-    for(fxIndex=0; fxIndex<kEffectCount; fxIndex++)
-    {
-        
-        address = fxIndex*4;
-        printf("%i, %i \n", fxIndex, address);
-        eeprom_writeByte(address, fx[fxIndex].Enabled);
-        printf("%i, %i \n", fxIndex, address+1);
-        eeprom_writeByte(address+1, fx[fxIndex].Parameter[0].Value);
-        eeprom_writeByte(address+2, fx[fxIndex].Parameter[0].Value >> 8);
-        printf("%i, %i \n", fxIndex, address+3);
-        eeprom_writeByte(address+3, fx[fxIndex].Parameter[1].Value);
-        eeprom_writeByte(address+4, fx[fxIndex].Parameter[1].Value >> 8);
-        printf("%i, %i \n", fxIndex, address+5);
-        eeprom_writeByte(address+5, fx[fxIndex].Parameter[2].Value);
-        eeprom_writeByte(address+6, fx[fxIndex].Parameter[2].Value >> 8);
-    }
-    eeprom_writeByte(EEPROM_SIZE-4, 0xDE);
-    eeprom_writeByte(EEPROM_SIZE-3, 0xAD);
-    eeprom_writeByte(EEPROM_SIZE-2, 0xBE);
-    eeprom_writeByte(EEPROM_SIZE-1, 0xEF);
-    
-    printf("Write complete \n");
+{    
+    eeprom_writeSeq(0, (uint8_t*)&config_nv/*, sizeof(config_nv_t)*/);
 }
 
-
-static void config_setDefaults(void)
+void config_defaults(void)
 {
-    // use the default config (no effects selected)
+    // apply the default config... 
+    
+    // set the header information
+    config_nv.Header.Signature = CONFIG_SIGNATURE;
+    config_nv.Header.Version = CONFIG_VERSION;
+    
+    // clear the look up table
+    int i;
+    for (i=0; i<MAX_PATCHES; i++)
+        config_nv.Lut.Address[i] = 0;
+    
+    // write the default effect settings
+    for (i=0; i<kEffectCount; i++)
+    {
+        int j;
+        
+        effectInfo_t *currentFx;
+        currentFx = &fx[i];
+        
+        config_nv.Patch.Fx[i].Enabled = currentFx->Enabled;
+        for(j=0; j<MAX_PARAMETERS; j++)
+        {
+            config_nv.Patch.Fx[i].ParamValue[j] = currentFx->Parameter[j].Value;
+        }
+    }
+    
+    config_save();
 }
 
 static void config_generateLUT(void)

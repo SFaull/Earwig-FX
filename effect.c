@@ -28,11 +28,11 @@ void effect_init(void)
     effect_set_defaults();
     
     // load the config from nv storage
-    bool valid_config = config_load();
+    bool valid_config = config_verify();
     
     // if config wasn't valid, write the defaults to NV
     if (!valid_config)
-        config_save();
+        config_defaults();
     
     // apply the settings to each effect module
     effect_updateParams();
@@ -191,6 +191,13 @@ int effect_getParamIndexByName(int effectIndex, char* str)
     }
     return -1;  // no match
 }
+
+/*
+int effect_getParamvalue(int effectIndex, int paramIndex)
+{
+    return fx[effectIndex].Parameter[paramIndex].Value;
+}
+ * */
 
 void effect_printEffectList(void)
 {
