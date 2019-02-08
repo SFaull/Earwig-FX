@@ -17,7 +17,7 @@ void tremolo_set_period(int period)
     float a = timePeriod*Fs;
     int b = (2*16)-1;
     tremPeriod = (int)(a/(float)b);
-    printf("Trem samples %d \n", tremPeriod);
+    //printf("Trem samples %d \n", tremPeriod);
 }
 
 /*

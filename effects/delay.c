@@ -44,7 +44,7 @@ void delay_set_delay_time(int milliseconds)
     if(delayTime < 0)
         delayTime *= -1;
     
-    printf("Delay: %dms\n", delayTime);
+    //printf("Delay: %dms\n", delayTime);
 }
 
 signed int delay(signed int delay_in)

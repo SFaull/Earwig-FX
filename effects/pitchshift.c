@@ -59,11 +59,11 @@ void bitcrusher_setOctave(int octave)
     else
         octave_shift = BASE;
     
-    printf("Pitch shift: %l\n", octave_shift+offset_shift);
+    //printf("Pitch shift: %l\n", octave_shift+offset_shift);
 }
 
 void bitcrusher_setDetune(int detune_shift)
 {
     offset_shift = detune_shift;
-    printf("Pitch shift: %l\n", octave_shift+offset_shift);
+    //printf("Pitch shift: %l\n", octave_shift+offset_shift);
 }
