@@ -31,6 +31,7 @@ char MasterWriteI2C1(unsigned char data_out);
 unsigned char MasterReadI2C1(void);
 unsigned int MastergetsI2C1(unsigned int length, unsigned char * rdptr);
 unsigned int MasterputsI2C1(unsigned char * wrptr);
+unsigned int MasterputslenI2C1(unsigned char * wrptr, int32_t length);
 void ResetVariables_I2C1(void);
 
 #endif	/* I2C_H */

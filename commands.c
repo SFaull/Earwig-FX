@@ -10,12 +10,14 @@
 #include "eeprom.h"
 #include "config.h"
 #include "watchdog.h"
+#include "effect.h"
 
 // TODO: rename all to prefix with cmd
 static void info(void);
 static void LED_on(void);
 static void LED_off(void);
 static void nv_erase(void);
+static void nv_read(void);
 static void configure_restore_defaults(void);
 static void remote_control(void);
 static void set_effect_parameter(void);
@@ -35,8 +37,15 @@ void commands_init(void)
     parser_addCommand("DUMP", dump);   
     parser_addCommand("HELP", help);   
     parser_addCommand("TEST:WD", cmd_test_watchdog); 
+    
     parser_addCommand("NV:ERASE", nv_erase);   
+    parser_addCommand("NV:READ", nv_read);   
+    
     parser_addCommand("CONF:DEFAULT", configure_restore_defaults); 
+    parser_addCommand("CONF:LOAD", config_init); 
+    parser_addCommand("CONF:SAVE", effect_saveToConfig); 
+    parser_addCommand("CONF:PRINT", config_print); 
+    
     parser_addCommand("LED:ON", LED_on);       // Turns LED on
     parser_addCommand("LED:OFF", LED_off);       // Turns LED on
     parser_addCommand("CONTROL", remote_control);
@@ -149,10 +158,43 @@ static void nv_erase(void)
     printf("Erase complete\n"); 
 }
 
+static void nv_read(void)
+{
+    char *arg1; 
+    char *arg2; 
+    arg1 = parser_next(); 
+    arg2 = parser_next(); 
+    
+    if(arg1 == NULL)
+	{
+        printf("Error: No address specified\n"); 
+        return;
+    }
+    
+    int length = 1;
+    
+    if(arg2 != NULL)
+	{
+        length = strtol(arg2, NULL, 0);
+    }
+    
+    long value = strtol(arg1, NULL, 0);
+    uint16_t address = (uint16_t*)value;
+    
+    while(length>0)
+    {
+        
+        uint8_t data = eeprom_readByte(address);
+        printf("0x%08X: 0x%02X\n", address, (unsigned int)data);
+        length--;
+        address++;
+    }
+}
+
 static void configure_restore_defaults(void)
 {
     effect_set_defaults();
-    config_save();
+    config_applyEffects();
 }
 
 /*

@@ -119,6 +119,7 @@ unsigned int MastergetsI2C1(unsigned int length, unsigned char * rdptr)
         }
         wait = 0;
         *rdptr = I2C1RCV;            /* save byte received */
+        //printf("length: %d, 0x%02X\n",length, I2C1RCV);
         rdptr++;
         length--;
         if(length == 0)              /* If last char, generate NACK sequence */
@@ -149,6 +150,23 @@ unsigned int MasterputsI2C1(unsigned char * wrptr)
 
         IdleI2C1();
         wrptr++;
+    }
+    return 0;			
+}
+
+
+unsigned int MasterputslenI2C1(unsigned char * wrptr, int32_t length)
+{
+    while(length)                           //transmit data until null char
+    {
+        if(MasterWriteI2C1(*wrptr) == -1)	    // write a byte
+        return -3;                          //return with write collison error
+
+        while(I2C1STATbits.TBF);             //Wait till data is transmitted.
+
+        IdleI2C1();
+        wrptr++;
+        length--;
     }
     return 0;			
 }

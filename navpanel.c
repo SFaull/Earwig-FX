@@ -215,5 +215,5 @@ void calculate_encoder_speed(void)
     timer_start(&encoder_interval);
     
     //printf("Time since last step: %lu \n", elapsed);
-    printf("%d sps\n", navpanel_encoder_speed);
+    //printf("%d sps\n", navpanel_encoder_speed);
 }

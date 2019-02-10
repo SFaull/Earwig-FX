@@ -37,18 +37,6 @@ config_nv_t * config_get_writable_reference(void)
 
 void config_init(void)
 {
-    // print the config size (debug)
-    printf("-------- CONFIG SIZE INFO ---------\n");
-    
-    
-    printf("Header:             %d\n", sizeof(config_header_t));
-    printf("LUT:                %d\n", sizeof(config_lut_t));
-    printf("Patch:              %d\n", sizeof(config_patch_t));
-    printf("    FX:             %d\n", sizeof(config_fx_t));
-    printf("Total:              %d\n", sizeof(config_nv_t));
-    printf("-----------------------------------\n");
-    
-    
     // read back all the data from NV
 	uint32_t src = 0;
 	
@@ -57,6 +45,8 @@ void config_init(void)
 	
 	// length of the data to read 
 	int32_t length = sizeof(config_nv_t);
+    
+    printf("Getting %lu bytes from eeprom\n", (unsigned long)length);
 	
 	// Read the all the data from NV 
 	eeprom_readSeq(src, dest, length);
@@ -67,7 +57,64 @@ void config_init(void)
     // if config wasn't valid, write the defaults to NV
     // TODO: is this actually a good idea?
     if (!valid_config)
+    {
+        
         config_defaults();
+        config_save();
+         
+    }
+    
+    //config_print();
+}
+
+void config_print(void)
+{
+    
+    printf("-------- Config  ------------------\n");
+    printf("Header:             %d\n", sizeof(config_header_t));
+    printf("LUT:                %d\n", sizeof(config_lut_t));
+    printf("Patch:              %d\n", sizeof(config_patch_t));
+    printf("    FX:             %d\n", sizeof(config_fx_t));
+    printf("Total:              %d\n", sizeof(config_nv_t));
+    printf("-----------------------------------\n");
+    
+    printf("\n\n\n\n");
+    
+    printf("---Header---\n");
+    printf("Signature:  0x%08lX\n", config_nv.Header.Signature);
+    printf("Version:    v%d\n", config_nv.Header.Version);
+    printf("---LUT------\n");
+    
+
+    int i;
+    /*
+    for (i=0; i<MAX_PATCHES; i++)
+        printf("%d:         0x%08lX\n", i, config_nv.Lut.Address[i]);
+    */
+    
+    
+    
+    printf("---Patch----\n");
+    for (i=0; i<kEffectCount; i++)
+    {
+        int j;
+        
+        effectInfo_t *currentFx;
+        currentFx = &fx[i];
+        
+        printf("\n");
+        
+        if(config_nv.Patch.Fx[i].Enabled)
+            printf("%s: Enabled\n", currentFx->Name);
+        else
+            printf("%s: Disabled\n", currentFx->Name);
+        
+        for(j=0; j<MAX_PARAMETERS; j++)
+        {
+            printf("Param %d: %d\n", j, config_nv.Patch.Fx[i].ParamValue[j]);
+        }
+    }
+    printf("--------------\n");
 }
 
 bool config_verify(void)
@@ -86,16 +133,38 @@ bool config_verify(void)
         return false;
     }
     printf("Config OK\n");
+    return true;
 }
 
 void config_save(void)
 {    
-    eeprom_writeSeq(0, (uint8_t*)&config_nv/*, sizeof(config_nv_t)*/);
+    //eeprom_writeSeq(0, (uint8_t*)&config_nv);
+    
+    nv_write(0, (uint8_t*)&config_nv, sizeof(config_nv_t));
+    
+    /*
+    int *ptr;
+    ptr = (uint8_t*)&config_nv;
+    
+    int i;
+    for (i=0; i<sizeof(config_nv_t); i++)
+    {
+        eeprom_writeByte(i, *ptr);
+        ptr++;
+    }
+     */
+    /*
+    eeprom_writeSeq(0, (uint8_t*)&config_nv.Header);
+    //eeprom_writeSeq(sizeof(config_header_t), (uint8_t*)&config_nv.Lut);
+    eeprom_writeSeq(sizeof(config_header_t) + sizeof(config_lut_t), (uint8_t*)&config_nv.Patch);
+    */
 }
 
 void config_defaults(void)
 {
-    // apply the default config... 
+    // first set the defaults
+    effect_set_defaults();
+    
     
     // set the header information
     config_nv.Header.Signature = CONFIG_SIGNATURE;
@@ -127,8 +196,6 @@ void config_applyEffects()
             config_nv.Patch.Fx[i].ParamValue[j] = currentFx->Parameter[j].Value;
         }
     }
-    
-    config_save();
 }
 
 static void config_generateLUT(void)
