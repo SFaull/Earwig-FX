@@ -128,7 +128,7 @@ static state_t do_SettingsMenu(void)
     {
         case kOK:
             i = menu_selectedIndex(&settingsMenu);
-            printf("index: %i", i);
+            
             if(i == kTestWatchdog)
                 watchdog_test();
             
