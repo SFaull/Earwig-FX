@@ -12,7 +12,7 @@
 #include <stdint.h>
 
 #define SERIALCOMMANDBUFFER 64
-#define MAXSERIALCOMMANDS	10
+#define MAXSERIALCOMMANDS	30
 #define MAXDELIMETER 2
 
 void parser_printCommandList(void);
