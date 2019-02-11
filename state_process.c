@@ -19,6 +19,8 @@ state_t currentState = kStartup;
 static state_t do_Startup(void);
 static state_t do_Home(void);
 static state_t do_MainMenu(void);
+static state_t do_PatchMenu(void);
+static state_t do_EffectMenu(void);
 static state_t do_SettingsMenu(void);
 static state_t do_ParamMenu(void);
 static state_t do_ParamEdit(void);
@@ -31,9 +33,16 @@ static state_t transition_E(void);
 static state_t transition_F(void);
 static state_t transition_G(void);
 static state_t transition_H(void);
+static state_t transition_J(void);
+static state_t transition_K(void);
+static state_t transition_L(void);
+static state_t transition_M(void);
+
 
 static void init_mainMenu(void);
-static void refresh_mainMenu(void);
+static void init_patchMenu(void);
+static void init_effectMenu(void);
+static void refresh_effectMenu(void);
 static void init_settingsMenu(void);
 static void init_paramMenu();
 static void refresh_paramMenu();
@@ -46,6 +55,8 @@ static effectInfo_t *currentFx;
 static int currentParameterValue;
 
 menu_t mainMenu;
+menu_t patchMenu;
+menu_t effectMenu;
 menu_t paramMenu;
 menu_t settingsMenu;
 
@@ -62,6 +73,12 @@ void state_process(void)
             break;
         case kMainMenu:
             currentState = do_MainMenu();
+            break;
+        case kPatchMenu:
+            currentState = do_PatchMenu();
+            break;
+        case kEffectMenu:
+            currentState = do_EffectMenu();
             break;
         case kParamMenu:
             currentState = do_ParamMenu();
@@ -97,6 +114,7 @@ static state_t do_Home(void)
 
 static state_t do_MainMenu(void)
 {
+    int i;
     switch(navpanel_getControl()) 
     {
         case kRotateCW:
@@ -107,18 +125,69 @@ static state_t do_MainMenu(void)
             break;
         case kBack:
             return transition_A();
-        case kOKLong:
-            return transition_C();
+            break;
         case kOK:
-            fx[menu_selectedIndex(&mainMenu)].Enabled = (fx[menu_selectedIndex(&mainMenu)].Enabled==0 ?  1 : 0);
-            refresh_mainMenu();
-            menu_draw(&mainMenu);
+            i = menu_selectedIndex(&mainMenu);
+            if(i==0)
+                return transition_J();
+            else
+                return transition_K();
             break;
         default:
             break;
     }
     
     return kMainMenu;
+}
+
+
+static state_t do_PatchMenu(void)
+{
+    switch(navpanel_getControl()) 
+    {
+        case kRotateCW:
+            menu_nextPos(&patchMenu);
+            break;
+        case kRotateCCW:
+            menu_prevPos(&patchMenu);
+            break;
+        case kBack:
+            return transition_B();
+            break;
+        case kOK:
+            // TODO 
+            break;
+        default:
+            break;
+    }
+    
+    return kPatchMenu;
+}
+
+static state_t do_EffectMenu(void)
+{
+    switch(navpanel_getControl()) 
+    {
+        case kRotateCW:
+            menu_nextPos(&effectMenu);
+            break;
+        case kRotateCCW:
+            menu_prevPos(&effectMenu);
+            break;
+        case kBack:
+            return transition_B();
+        case kOKLong:
+            return transition_C();
+        case kOK:
+            fx[menu_selectedIndex(&effectMenu)].Enabled = (fx[menu_selectedIndex(&effectMenu)].Enabled==0 ?  1 : 0);
+            refresh_effectMenu();
+            menu_draw(&effectMenu);
+            break;
+        default:
+            break;
+    }
+    
+    return kEffectMenu;
 }
 
 static state_t do_SettingsMenu(void)
@@ -211,7 +280,7 @@ static state_t transition_B(void)
 
 static state_t transition_C(void)
 {
-    int i = menu_selectedIndex(&mainMenu);
+    int i = menu_selectedIndex(&effectMenu);
     currentFx = &fx[i];
     init_paramMenu(currentFx);
     printf("Transition C \n");
@@ -222,8 +291,8 @@ static state_t transition_C(void)
 static state_t transition_D(void)
 {
     printf("Transition D \n");
-    menu_draw(&mainMenu);
-    return kMainMenu;
+    menu_draw(&effectMenu);
+    return kEffectMenu;
 }
 
 
@@ -263,13 +332,63 @@ static state_t transition_H(void)
     return kSettingsMenu;
 }
 
+static state_t transition_J(void)
+{
+    printf("Transition J \n");
+    init_effectMenu();
+    menu_draw(&effectMenu);
+    return kEffectMenu;
+}
+
+static state_t transition_K(void)
+{
+    printf("Transition K \n");
+    init_patchMenu();
+    menu_draw(&patchMenu);
+    return kPatchMenu;
+}
+
+static state_t transition_L(void)
+{
+    printf("Transition L \n");
+}
+
+static state_t transition_M(void)
+{
+    printf("Transition M \n");
+}
+
 static void init_mainMenu(void)
+{
+    // setup main menu
+    mainMenu.Heading = "Main Menu";
+    mainMenu.Item[0] = "Edit Loadout";
+    mainMenu.Item[1] = "Save Loadout";
+    mainMenu.Item[2] = "Load Patch";
+
+    mainMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
+    mainMenu.SelectedPosition = 0;  // always select the top item
+}
+
+
+static void init_patchMenu(void)
+{
+    // setup main menu
+    patchMenu.Heading = "Patches";
+    patchMenu.Item[0] = "temp...";
+
+    patchMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
+    patchMenu.SelectedPosition = 0;  // always select the top item
+}
+
+
+static void init_effectMenu(void)
 {
     static char temp[kEffectCount][25];
     
     int i;
     // setup main menu
-    mainMenu.Heading = "Main Menu";
+    effectMenu.Heading = "Main Menu";
     for(i=0; i<kEffectCount; i++)
     {
         if (fx[i].Enabled)
@@ -277,11 +396,11 @@ static void init_mainMenu(void)
         else
             sprintf(temp[i], "[  ] %s", fx[i].Name);
         //paramMenu.Item[i] = malloc(sizeof(char) * 30);
-        mainMenu.Item[i] = temp[i];
+        effectMenu.Item[i] = temp[i];
     }
 
-    mainMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
-    mainMenu.SelectedPosition = 0;  // always select the top item
+    effectMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
+    effectMenu.SelectedPosition = 0;  // always select the top item
 }
 
 static void init_settingsMenu(void)
@@ -298,13 +417,13 @@ static void init_settingsMenu(void)
 }
 
 
-static void refresh_mainMenu(void)
+static void refresh_effectMenu(void)
 {
     static char temp[kEffectCount][25];
     
     int i;
     // setup main menu
-    mainMenu.Heading = "Main Menu";
+    effectMenu.Heading = "Main Menu";
     for(i=0; i<kEffectCount; i++)
     {
         if (fx[i].Enabled)
@@ -312,7 +431,7 @@ static void refresh_mainMenu(void)
         else
             sprintf(temp[i], "[  ] %s", fx[i].Name);
         //paramMenu.Item[i] = malloc(sizeof(char) * 30);
-        mainMenu.Item[i] = temp[i];
+        effectMenu.Item[i] = temp[i];
     }
 }
 

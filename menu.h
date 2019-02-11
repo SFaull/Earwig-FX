@@ -12,7 +12,7 @@
 typedef struct
 {
     char    *Heading;
-    char    *Item[10];
+    char    *Item[100];
     uint8_t SelectedPosition;
     uint8_t FirstDisplayedItem;
 } menu_t;

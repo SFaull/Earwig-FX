@@ -14,9 +14,11 @@ typedef enum {
     kStartup = 0,
     kHome = 1,
     kMainMenu = 2,
-    kParamMenu = 3,
-    kParamEdit = 4,
-    kSettingsMenu = 5
+    kPatchMenu = 3,
+    kEffectMenu = 4,
+    kParamMenu = 5,
+    kParamEdit = 6,
+    kSettingsMenu = 7
 } state_t;
 
 // enumeration for list of items in settings menu
