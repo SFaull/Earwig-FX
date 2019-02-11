@@ -16,8 +16,8 @@
 #define CONFIG_SIGNATURE		0xDEADBEEF
 #define CONFIG_VERSION          1
 
-// Support for upto 100 patches
-#define MAX_PATCHES 100
+// Support for upto 99 patches
+#define MAX_PATCHES 99
 
 /** @brief Configuration header structure */
 typedef struct {

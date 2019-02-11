@@ -13,6 +13,7 @@
 #include "effect.h"
 #include "config.h"
 #include "watchdog.h"
+#include "patch.h"
 
 state_t currentState = kStartup;
 
@@ -374,8 +375,19 @@ static void init_mainMenu(void)
 static void init_patchMenu(void)
 {
     // setup main menu
+    
     patchMenu.Heading = "Patches";
-    patchMenu.Item[0] = "temp...";
+    
+    int i;
+    int count = 0;
+    for(i=0; i<MAX_PATCHES; i++)
+    {
+        if(patch_exists(i))
+        {
+            patchMenu.Item[count] = "a";    // TODO: print the patch index + the name
+            count++;
+        }
+    }    
 
     patchMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
     patchMenu.SelectedPosition = 0;  // always select the top item

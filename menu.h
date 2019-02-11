@@ -9,10 +9,12 @@
 #ifndef MENU_H
 #define	MENU_H
 
+#define MAX_ITEMS 99
+
 typedef struct
 {
     char    *Heading;
-    char    *Item[100];
+    char    *Item[MAX_ITEMS];
     uint8_t SelectedPosition;
     uint8_t FirstDisplayedItem;
 } menu_t;

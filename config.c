@@ -137,27 +137,8 @@ bool config_verify(void)
 }
 
 void config_save(void)
-{    
-    //eeprom_writeSeq(0, (uint8_t*)&config_nv);
-    
+{        
     nv_write(0, (uint8_t*)&config_nv, sizeof(config_nv_t));
-    
-    /*
-    int *ptr;
-    ptr = (uint8_t*)&config_nv;
-    
-    int i;
-    for (i=0; i<sizeof(config_nv_t); i++)
-    {
-        eeprom_writeByte(i, *ptr);
-        ptr++;
-    }
-     */
-    /*
-    eeprom_writeSeq(0, (uint8_t*)&config_nv.Header);
-    //eeprom_writeSeq(sizeof(config_header_t), (uint8_t*)&config_nv.Lut);
-    eeprom_writeSeq(sizeof(config_header_t) + sizeof(config_lut_t), (uint8_t*)&config_nv.Patch);
-    */
 }
 
 void config_defaults(void)

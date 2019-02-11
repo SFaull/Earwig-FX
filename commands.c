@@ -18,6 +18,7 @@ static void LED_on(void);
 static void LED_off(void);
 static void nv_erase(void);
 static void nv_read(void);
+static void cmd_nv_write(void);
 static void configure_restore_defaults(void);
 static void remote_control(void);
 static void set_effect_parameter(void);
@@ -26,6 +27,7 @@ static void reset(void);
 static void help(void);
 static void dump(void);
 static void cmd_test_watchdog(void);
+static void cmd_patch(void);
 static void unrecognized(void);
 
 void commands_init(void)
@@ -40,11 +42,14 @@ void commands_init(void)
     
     parser_addCommand("NV:ERASE", nv_erase);   
     parser_addCommand("NV:READ", nv_read);   
+    parser_addCommand("NV:WRITE", cmd_nv_write); 
     
     parser_addCommand("CONF:DEFAULT", configure_restore_defaults); 
     parser_addCommand("CONF:LOAD", config_init); 
     parser_addCommand("CONF:SAVE", effect_saveToConfig); 
     parser_addCommand("CONF:PRINT", config_print); 
+    
+    parser_addCommand("PATCH", cmd_patch); 
     
     parser_addCommand("LED:ON", LED_on);       // Turns LED on
     parser_addCommand("LED:OFF", LED_off);       // Turns LED on
@@ -67,6 +72,13 @@ static void info(void)
 static void cmd_test_watchdog(void)
 {
     watchdog_test();
+}
+
+static void cmd_patch(void)
+{
+    int adress = 40;
+    config_get_writable_reference()->Lut.Address[adress] = 0x0300;
+    config_save();
 }
 
 /**
@@ -189,6 +201,24 @@ static void nv_read(void)
         length--;
         address++;
     }
+}
+
+static void cmd_nv_write(void)
+{
+    char *arg1; 
+    char *arg2; 
+    arg1 = parser_next(); 
+    arg2 = parser_next(); 
+    
+    if(arg1 == NULL || arg2 == NULL)
+	{
+        printf("Error\n"); 
+        return;
+    }
+    
+    long address = strtol(arg1, NULL, 0);
+    long value = strtol(arg2, NULL, 0);
+    eeprom_writeByte((unsigned int)address, (unsigned char)value);
 }
 
 static void configure_restore_defaults(void)
