@@ -14,6 +14,7 @@
 #include "effects/pitchshift.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include "uart.h"
 
 effectInfo_t fx[kEffectCount];
 signed int sample;
@@ -149,6 +150,8 @@ void effect_updateParams(void)
     bitcrusher_setDetune(fx[kPitchshift].Parameter[1].Value);
 }
 
+bool isRecording = false;
+
 void effect_process(void)
 {
     if (sample_ready)
@@ -159,7 +162,15 @@ void effect_process(void)
                   sample = fx[i].Func(sample);
 
          sample_ready = false;
+         
+         if(isRecording)
+             uart_write_sample(sample);
     }
+}
+
+void effect_recording(bool record)
+{
+    isRecording = record;
 }
 
 int effect_getFxIndexByName(char* str)

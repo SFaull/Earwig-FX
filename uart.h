@@ -13,7 +13,7 @@
 #define UART1_BAUDRATE    9600                          // Baud rate for UART
 #define UART1_BRGVAL      ((FCY/UART1_BAUDRATE)/16)-1   // BRG value calculated from baud rate definition
 
-#define UART2_BAUDRATE    115200                        // Baud rate for UART
+#define UART2_BAUDRATE    115200                         // Baud rate for UART
 #define UART2_BRGVAL      ((FCY/UART2_BAUDRATE)/16)-1   // BRG value calculated from baud rate definition
 
 
@@ -22,6 +22,7 @@
 
 void uart1_init(void);
 void uart2_init(void);
+void uart_write_sample(signed int sample);
 
 #endif	/* UART_H */
 

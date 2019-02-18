@@ -19,6 +19,8 @@ static void LED_off(void);
 static void nv_erase(void);
 static void nv_read(void);
 static void cmd_nv_write(void);
+static void cmd_stream_start(void);
+static void cmd_stream_Stop(void);
 static void configure_restore_defaults(void);
 static void remote_control(void);
 static void set_effect_parameter(void);
@@ -43,6 +45,9 @@ void commands_init(void)
     parser_addCommand("NV:ERASE", nv_erase);   
     parser_addCommand("NV:READ", nv_read);   
     parser_addCommand("NV:WRITE", cmd_nv_write); 
+    
+    parser_addCommand("STREAM:START", cmd_stream_start); 
+    parser_addCommand("STREAM:STOP", cmd_stream_Stop); 
     
     parser_addCommand("CONF:DEFAULT", configure_restore_defaults); 
     parser_addCommand("CONF:LOAD", config_init); 
@@ -219,6 +224,15 @@ static void cmd_nv_write(void)
     long address = strtol(arg1, NULL, 0);
     long value = strtol(arg2, NULL, 0);
     eeprom_writeByte((unsigned int)address, (unsigned char)value);
+}
+
+static void cmd_stream_start(void)
+{
+    effect_recording(true);
+}
+static void cmd_stream_Stop(void)
+{
+    effect_recording(false);
 }
 
 static void configure_restore_defaults(void)

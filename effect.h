@@ -54,6 +54,7 @@ void effect_printEffectList(void);
 void effect_set_defaults(void);
 void effect_saveToConfig();
 void effect_loadFromConfig(void);
+void effect_recording(bool record);
 
 
 extern effectInfo_t fx[kEffectCount];

@@ -93,6 +93,13 @@ static void uart2_PutChar(char c)
   U2TXREG = c;                    // Write character to UART2
 }
 
+void uart_write_sample(signed int sample)
+{
+        // TODO is this correct endianness?
+    uart2_PutChar(sample>>8);
+    uart2_PutChar((char)sample);
+}
+
 /*
 int bluetooth_printf(const char *format, ...)
 {
