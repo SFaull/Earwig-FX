@@ -81,9 +81,9 @@ static void cmd_test_watchdog(void)
 
 static void cmd_patch(void)
 {
-    int adress = 40;
-    config_get_writable_reference()->Lut.Address[adress] = 0x0300;
-    config_save();
+    //int adress = 40;
+    //config_get_writable_reference()->Lut.Address[adress] = 0x0300;
+    //config_save();
 }
 
 /**

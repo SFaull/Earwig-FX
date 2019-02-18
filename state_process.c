@@ -61,6 +61,7 @@ menu_t effectMenu;
 menu_t paramMenu;
 menu_t settingsMenu;
 
+static main_option_t option = kLoad;
 
 void state_process(void)
 {
@@ -129,11 +130,14 @@ static state_t do_MainMenu(void)
             break;
         case kOK:
             i = menu_selectedIndex(&mainMenu);
-            if(i==0)
-                return transition_J();
-            else
-                return transition_K();
-            break;
+            switch(i)
+            {
+                case kEdit: return transition_J();
+                case kLoad: return transition_K();
+                case kSave: return transition_L();
+                case kDelete: return transition_M();
+                default: break;
+            }
         default:
             break;
     }
@@ -144,6 +148,7 @@ static state_t do_MainMenu(void)
 
 static state_t do_PatchMenu(void)
 {
+    int i;
     switch(navpanel_getControl()) 
     {
         case kRotateCW:
@@ -156,7 +161,23 @@ static state_t do_PatchMenu(void)
             return transition_B();
             break;
         case kOK:
-            // TODO 
+            i = menu_selectedIndex(&patchMenu);
+            switch(option)
+            {
+                case kSave:
+                    config_savePatch(i);
+                    break;
+                case kLoad:
+                    config_loadPatch(i);
+                    // load from config
+                    effect_loadFromConfig();
+                    // apply the settings to each effect module
+                    effect_updateParams();
+                    break;
+                case kDelete:
+                    break;
+                default: break;
+            }
             break;
         default:
             break;
@@ -343,6 +364,8 @@ static state_t transition_J(void)
 
 static state_t transition_K(void)
 {
+    // TODO init patch load
+    option = kLoad;
     printf("Transition K \n");
     init_patchMenu();
     menu_draw(&patchMenu);
@@ -351,21 +374,32 @@ static state_t transition_K(void)
 
 static state_t transition_L(void)
 {
+    // TODO init patch save
+    option = kSave;
     printf("Transition L \n");
+    init_patchMenu();
+    menu_draw(&patchMenu);
+    return kPatchMenu;
 }
 
 static state_t transition_M(void)
 {
+    // TODO init patch delete
+    option = kDelete;
     printf("Transition M \n");
+    init_patchMenu();
+    menu_draw(&patchMenu);
+    return kPatchMenu;
 }
 
 static void init_mainMenu(void)
 {
     // setup main menu
     mainMenu.Heading = "Main Menu";
-    mainMenu.Item[0] = "Edit Loadout";
-    mainMenu.Item[1] = "Save Loadout";
-    mainMenu.Item[2] = "Load Patch";
+    mainMenu.Item[kEdit] = "Edit Loadout";
+    mainMenu.Item[kSave] = "Save Loadout";
+    mainMenu.Item[kLoad] = "Load Patch";
+    mainMenu.Item[kDelete] = "Delete Patch";
 
     mainMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
     mainMenu.SelectedPosition = 0;  // always select the top item
@@ -373,20 +407,18 @@ static void init_mainMenu(void)
 
 
 static void init_patchMenu(void)
-{
-    // setup main menu
-    
+{    
+    static char temp[MAX_PATCHES][10];
     patchMenu.Heading = "Patches";
     
     int i;
-    int count = 0;
     for(i=0; i<MAX_PATCHES; i++)
     {
-        if(patch_exists(i))
-        {
-            patchMenu.Item[count] = "a";    // TODO: print the patch index + the name
-            count++;
-        }
+        
+        //patchMenu.Item[count] = "a";    // TODO: print the patch index + the name
+        sprintf(temp[i],"%d", i);
+        patchMenu.Item[i] = temp[i];
+        //strcpy (patchMenu.Item[count],temp);
     }    
 
     patchMenu.FirstDisplayedItem = 0;    // First menu item (distortion))
@@ -527,7 +559,7 @@ static void drawFxChain(void)
         }
     }
     oled_clear();
-    //oled_println("Home");
+    oled_println(config_get_writable_reference()->Patch.Name);
     
     if (count == 0)
         oled_println("No Effects...");

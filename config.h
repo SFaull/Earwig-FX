@@ -14,7 +14,7 @@
 
 
 #define CONFIG_SIGNATURE		0xDEADBEEF
-#define CONFIG_VERSION          1
+#define CONFIG_VERSION          2
 
 // Support for upto 99 patches
 #define MAX_PATCHES 99
@@ -25,11 +25,7 @@ typedef struct {
 	uint8_t Version;														// 1 byte
     uint8_t Pad[11];                                                        // 11 bytes
 } config_header_t;                                                          // TOTAL = 16 bytes
-
-/** @brief Patch look up table structure */
-typedef struct {
-	uint16_t Address[MAX_PATCHES];                                          // 2 * 100 = 200 byte
-} config_lut_t;                                                             // TOTAL = 200 bytes	
+                                                      // TOTAL = 200 bytes	
 
 /** @brief Stripped down parameter for config structure */
 typedef struct{
@@ -51,9 +47,7 @@ typedef struct {
  */
 typedef struct {
 	config_header_t Header;												// 16 bytes
-    config_lut_t Lut;                                                   // 200 bytes
 	config_patch_t Patch;                                               // 64 bytes
-    //config_patch_t Patch[MAX_PATCHES];
 } config_nv_t;                                                          // TOTAL = 280 bytes
 
 void config_print(void);
@@ -62,6 +56,8 @@ void config_save(void);
 void config_init(void);
 void config_defaults(void);
 void config_applyEffects();
+void config_loadPatch(uint8_t index);
+void config_savePatch(uint8_t index);
 
 const config_nv_t * config_get_reference(void);
 config_nv_t * config_get_writable_reference(void);

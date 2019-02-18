@@ -27,7 +27,15 @@ typedef enum {
     kTestWatchdog = 1,
     kBonusFeatures = 2,
     kRestoreDefaults = 3
-} setting_t;
+} settings_option_t;
+
+// enumeration for list of items in main menu
+typedef enum {
+    kEdit = 0,
+    kSave = 1,
+    kLoad = 2,
+    kDelete = 3
+} main_option_t;
 
 void state_process(void);
 
