@@ -96,8 +96,9 @@ static void uart2_PutChar(char c)
 void uart_write_sample(signed int sample)
 {
         // TODO is this correct endianness?
-    uart2_PutChar(sample>>8);
+    //uart2_PutChar(sample>>8);
     uart2_PutChar((char)sample);
+    uart2_PutChar(sample>>8);
 }
 
 /*
