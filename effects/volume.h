@@ -31,6 +31,9 @@
 #ifndef VOLUME_H
 #define	VOLUME_H
 
+#define VOLUME_MAX 16
+#define VOLUME_MIN -16
+
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 signed int volume(signed int x, int level);

@@ -14,7 +14,7 @@ static unsigned long read_address = 0;
 
 float delay_get_decay(void) 
 { 
-    float percentage = 100-(delayVol*6.25);
+    float percentage = 100+(delayVol*6.25);
     return percentage; 
 }
 

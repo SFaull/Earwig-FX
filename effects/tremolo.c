@@ -33,14 +33,16 @@ void tremolo_set_period(int percentage)
 signed int tremolo(signed int trem_in)
 {
     static int LFO = 0;
-    static int tremVol = 8;      // Volume variable (0: 0% volume, 8: 100% volume)
+    static int tremVol = 0;      // Volume variable (0: 0% volume, 8: 100% volume)
     static int direction = 0;  
+    
+    // TODO: maybe we should halve the volume of the sample before modulating it?
     
     if (LFO == tremPeriod)   // when max LFO is reached (according to trem frequency)
     {
-        if (tremVol >= 16)      //Max volume reached
+        if (tremVol >= VOLUME_MAX)      //Max volume reached
             direction = 0;
-        else if (tremVol <= 0)  // min volume reached
+        else if (tremVol <= VOLUME_MIN)  // min volume reached
             direction = 1;
 
         if (direction == 1)
