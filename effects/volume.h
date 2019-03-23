@@ -33,6 +33,7 @@
 
 #define VOLUME_MAX 16
 #define VOLUME_MIN -16
+#define VOLUME_TOTAL_STEPS (VOLUME_MAX-VOLUME_MIN)
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
