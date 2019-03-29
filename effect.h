@@ -10,6 +10,7 @@
 #define	EFFECT_H
 
 //#define FX_COUNT 4
+#define SAMPLE_BUFFER_SIZE 128
 #define MAX_PARAMETERS 3
 
 #include <stdio.h>
@@ -59,7 +60,9 @@ void effect_recording(bool record);
 
 
 extern effectInfo_t fx[kEffectCount];
+extern signed int sample_buffer[SAMPLE_BUFFER_SIZE];
 extern signed int sample;
 extern bool sample_ready;
+extern bool sample_buffer_full;
 
 #endif	/* EFFECT_H */

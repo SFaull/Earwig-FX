@@ -63,6 +63,12 @@ void warble_set_freq(int freq)
     printf("warble period: %d\n", warblePeriod);
 }
 
+/* I don't know what an appropriate unit for depth is? perhaps just pick some arbitrary number that sound goof for min/max*/
+void warble_set_depth(int percentage) 
+{ 
+ 
+}
+
 
 // The way I understand it is that the LFO controls the speed (warble period) and the amplitude of the sine table is the depth
 // BUT depth is also a function of the LFO - ie faster LFO, greater depth

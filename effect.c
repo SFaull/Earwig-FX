@@ -19,12 +19,15 @@
 
 effectInfo_t fx[kEffectCount];
 signed int sample;
+signed int sample_buffer[SAMPLE_BUFFER_SIZE];
 bool sample_ready;
+bool sample_buffer_full;
 
 void effect_init(void)
 {       
     sample = 0;
     sample_ready = false;
+    sample_buffer_full = false;
     
     // load default
     effect_set_defaults();

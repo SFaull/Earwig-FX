@@ -167,11 +167,9 @@ void __attribute__((interrupt, no_auto_psv)) _U2RXInterrupt(void)
 void __attribute__((interrupt, no_auto_psv)) _DCIInterrupt(void) 
 {
     HEARTBEAT_LED = 1;
-    sample_ready = true;
-    // in theory this should achieve simple loopback
     static int dummy = 0;
     static long adc = 0;
-    //static int sample = 0;
+    static int sample_buffer_index = 0;
 
     IFS3bits.DCIIF = 0; //clear DCI interrupt
 
@@ -189,12 +187,21 @@ void __attribute__((interrupt, no_auto_psv)) _DCIInterrupt(void)
     if (adc > 32767)
         adc = 32767;
     
-    
+    // store sample
     sample = adc;
-    //sample = delay(adc);
-    //sample = chorus(sample);
+    // add it to a buffer
+    sample_buffer[sample_buffer_index] = sample;
     
-    effect_process();
+    // circular buffer logic
+    sample_buffer_index++;
+    if(sample_buffer_index >= SAMPLE_BUFFER_SIZE)
+    {
+        sample_buffer_full = true;
+        sample_buffer_index = 0;
+    }
+    
+    sample_ready = true;
+    
     HEARTBEAT_LED = 0;
 }
 

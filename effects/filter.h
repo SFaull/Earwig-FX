@@ -32,6 +32,7 @@
 #define	FILTER_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
+#include <stdbool.h>
 
 signed int lowpass(signed int lp_in);
 

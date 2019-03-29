@@ -19,6 +19,12 @@
  * bCLK = pin5 (RP25)
  */
 
+
+/*
+ * TODO: This may be a useful link to setup the chip in a better way - ping pong buffer?
+ * https://github.com/marcogil93/Digital-MultiPedal/blob/master/src/WM8510CodecDrv.c
+ */
+
 void wm8510_init(void)
 {
     // PERIPHERAL PIN SELECT
