@@ -63,9 +63,9 @@ int16_t main(void)
     while(1)
     {
        watchdog_kick();
-       heartbeat_process();
+       //heartbeat_process();
        navpanel_process();
        state_process();
-       effect_process();
+       //effect_process();
     }
 }

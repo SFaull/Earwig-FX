@@ -1,6 +1,7 @@
 #include "config.h"
 #include "effect.h"
 #include "eeprom.h"
+#include "watchdog.h"
 #include <stddef.h>
 
 static void config_generateLUT(void);
@@ -65,7 +66,10 @@ void config_init(void)
         // set all the patches to the default
         int i;
         for(i=0;i<MAX_PATCHES;i++)
+        {
+            watchdog_kick();
             config_savePatch(i);
+        }
     }
     
     //config_print();

@@ -13,6 +13,7 @@
         <itemPath>effects/volume.h</itemPath>
         <itemPath>effects/bitcrusher.h</itemPath>
         <itemPath>effects/pitchshift.h</itemPath>
+        <itemPath>effects/warble.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="fonts" projectFiles="true">
         <itemPath>fonts/Callibri15.h</itemPath>
@@ -55,6 +56,7 @@
         <itemPath>effects/volume.c</itemPath>
         <itemPath>effects/bitcrusher.c</itemPath>
         <itemPath>effects/pitchshift.c</itemPath>
+        <itemPath>effects/warble.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>system.c</itemPath>

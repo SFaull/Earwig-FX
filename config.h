@@ -14,7 +14,7 @@
 
 
 #define CONFIG_SIGNATURE		0xDEADBEEF
-#define CONFIG_VERSION          2
+#define CONFIG_VERSION          3
 
 // Support for upto 99 patches
 #define MAX_PATCHES 99

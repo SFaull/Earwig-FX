@@ -16,7 +16,7 @@
 
 #define _swap_int16_t(a, b) { int16_t t = a; a = b; b = t; }
 
-int SlaveAddress = 0x3c; 
+int SlaveAddress = 0x3d; 
 uint8_t buffer[DISPLAY_BUFFER_SIZE];
  void oled_command(char c) {
      
@@ -28,7 +28,7 @@ uint8_t buffer[DISPLAY_BUFFER_SIZE];
     // I2C command
     uint8_t control = 0x00;   // Co = 0, D/C = 0
     
-    MasterWriteI2C1(0x78);
+    MasterWriteI2C1(0x7A);
     WaitFlag();
     WaitForACK();
     
@@ -54,7 +54,7 @@ uint8_t buffer[DISPLAY_BUFFER_SIZE];
     
     uint8_t control = 0x40;   // Co = 0, D/C = 1
     
-    MasterWriteI2C1(0x78);
+    MasterWriteI2C1(0x7A);
     WaitFlag();
     WaitForACK();
     

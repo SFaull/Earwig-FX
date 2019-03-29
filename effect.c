@@ -12,6 +12,7 @@
 #include "effects/tremolo.h"
 #include "effects/bitcrusher.h"
 #include "effects/pitchshift.h"
+#include "effects/warble.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include "uart.h"
@@ -37,7 +38,7 @@ void effect_init(void)
 
 void effect_set_defaults(void)
 {
-        fx[kDelay].Name = "Delay";
+    fx[kDelay].Name = "Delay";
     fx[kDelay].Parameter[0].Name = "Delay Time";
     fx[kDelay].Parameter[0].Unit = "ms";
     fx[kDelay].Parameter[0].Value = 200;
@@ -111,6 +112,15 @@ void effect_set_defaults(void)
     fx[kPitchshift].Parameter[1].Max = 1000;
     fx[kPitchshift].Enabled = false;
     fx[kPitchshift].Func = pitchshift;
+    
+    fx[kWarble].Name = "Warble";
+    fx[kWarble].Parameter[0].Name = "Period";
+    fx[kWarble].Parameter[0].Unit = "ms";
+    fx[kWarble].Parameter[0].Value = 2000;
+    fx[kWarble].Parameter[0].Min = 200;
+    fx[kWarble].Parameter[0].Max = 5000;
+    fx[kWarble].Enabled = false;
+    fx[kWarble].Func = warble;
 }
 
 void effect_loadFromConfig(void)
@@ -148,6 +158,7 @@ void effect_updateParams(void)
     tremolo_set_period(fx[kTremolo].Parameter[0].Value);
     bitcrusher_setOctave(fx[kPitchshift].Parameter[0].Value);
     bitcrusher_setDetune(fx[kPitchshift].Parameter[1].Value);
+    warble_set_period(fx[kWarble].Parameter[0].Value);
 }
 
 bool isRecording = false;

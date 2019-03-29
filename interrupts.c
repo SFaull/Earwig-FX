@@ -17,6 +17,7 @@
 #include "effects/filter.h"
 #include "effects/tremolo.h"
 #include "effects/volume.h"
+#include "heartbeat.h"
 
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */
@@ -165,6 +166,7 @@ void __attribute__((interrupt, no_auto_psv)) _U2RXInterrupt(void)
 //DCI ISR
 void __attribute__((interrupt, no_auto_psv)) _DCIInterrupt(void) 
 {
+    HEARTBEAT_LED = 1;
     sample_ready = true;
     // in theory this should achieve simple loopback
     static int dummy = 0;
@@ -191,6 +193,9 @@ void __attribute__((interrupt, no_auto_psv)) _DCIInterrupt(void)
     sample = adc;
     //sample = delay(adc);
     //sample = chorus(sample);
+    
+    effect_process();
+    HEARTBEAT_LED = 0;
 }
 
 // Run when Timer1 interrupt is triggered
